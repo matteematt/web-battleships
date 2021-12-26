@@ -1,0 +1,16 @@
+html {
+	text-align: center;
+	background-color: #2a2a28;
+	color: white;
+	--section-colour: #21211e;
+}
+
+h1 {
+	font-size: 3rem;
+}
+
+.game {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	grid-gap: 2rem;
+}
