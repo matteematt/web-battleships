@@ -4,20 +4,27 @@
 	<link rel="stylesheet" href="index.css"/>
 	<script src="components/Grid.js"></script>
 	<script src="components/PlayerSelection.js"></script>
+	<script src="components/FleetSelection.js"></script>
 	<script>
 		// Init game state object
 		window.game = {
+			settings: {},
 		}
 	</script>
 	<!-- Need other meta things here -->
 </head>
 <body>
 	<h1>Battleships</h1>
-	<div class="players">
-		<player-selection></player-selection>
-	</div>
-	<div class="game">
-		<battleship-grid ></battleship-grid>
-		<battleship-grid ></battleship-grid>
+	<div class="game-states-container">
+		<div class="state-players">
+			<player-selection></player-selection>
+		</div>
+		<div class="state-fleet">
+			<fleet-selection></fleet-selection>
+		</div>
+		<div class="state-grid">
+			<battleship-grid ></battleship-grid>
+			<battleship-grid ></battleship-grid>
+		</div>
 	</div>
 </body>

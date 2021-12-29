@@ -3,13 +3,27 @@ html {
 	background-color: #2a2a28;
 	color: white;
 	--section-colour: #21211e;
+	--item-colour: #191917;
+	--section-radius: 6px;
+	--item-colour-hover: #0e3313;
 }
 
 h1 {
 	font-size: 3rem;
 }
 
-.game {
+.game-states-container {
+	--contains: 3;
+	display: grid;
+	grid-template-columns: repeat(var(--contains), 1fr);
+	grid-gap: 2rem;
+  width: calc(var(--contains) * 100%);
+	position: absolute;
+	margin-left: 1rem;
+	margin-right: 1rem;
+}
+
+.state-grid {
 	display: grid;
 	grid-template-columns: repeat(2, 1fr);
 	grid-gap: 2rem;

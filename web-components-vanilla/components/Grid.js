@@ -9,7 +9,7 @@ gridTemplate.innerHTML = `
 <style>
 .grid {
 	background-color: var(--section-colour);
-	border-radius: 6px;
+	border-radius: var(--section-radius);
 	aspect-ratio: 1/1;
 }
 .grid-container {
