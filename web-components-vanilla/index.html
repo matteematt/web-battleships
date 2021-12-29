@@ -3,6 +3,7 @@
 	<title>Battleships</title>
 	<link rel="stylesheet" href="index.css"/>
 	<script src="components/Grid.js"></script>
+	<script src="components/PlayerSelection.js"></script>
 	<script>
 		// Init game state object
 		window.game = {
@@ -12,6 +13,9 @@
 </head>
 <body>
 	<h1>Battleships</h1>
+	<div class="players">
+		<player-selection></player-selection>
+	</div>
 	<div class="game">
 		<battleship-grid ></battleship-grid>
 		<battleship-grid ></battleship-grid>

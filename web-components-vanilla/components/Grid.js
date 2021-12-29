@@ -1,11 +1,11 @@
-const template = document.createElement('template')
+const gridTemplate = document.createElement('template')
 
 const COLS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 'X']
 const ROWS = ['A','B','C','D','E','F','G','H','I','J']
 
 const grid = ROWS.map((r) => COLS.map((c) => `${r}${c}`)).flat()
 
-template.innerHTML = `
+gridTemplate.innerHTML = `
 <style>
 .grid {
 	background-color: var(--section-colour);
@@ -42,7 +42,7 @@ class Grid extends HTMLElement {
 	constructor() {
 		super();
 		this.attachShadow({mode: 'open'})
-		this.shadowRoot.appendChild(template.content.cloneNode(true));
+		this.shadowRoot.appendChild(gridTemplate.content.cloneNode(true));
 	}
 
 	clickGridValue(gridElement) {
