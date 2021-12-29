@@ -1,10 +1,9 @@
 const fleetSelectionTemplate = document.createElement('template')
 
 const fleetSelectionOptions = [
-	{ type: 0, name: "Two Players", ico: 'assets/User-Add-256.png'},
-	{ type: 1, name: "Easy CPU", ico: 'assets/Laugh-256.png'},
-	{ type: 2, name: "Med CPU", ico: 'assets/Angry-256.png'},
-	{ type: 3, name: "Hard CPU", ico: 'assets/Devil-256.png'},
+	{ type: 0, name: "Classic", ico: 'assets/Ship-01-256.png', desc: 'Carrier (5), Battleship (4), Destroyer (3), Submarine (3), Patrol (2)'},
+	{ type: 1, name: "Age of Sail", ico: 'assets/Sailor-Wheel-256.png', desc: '4 x Ship of the Line (4), Corvette (3), 2 x Privateer (2)'},
+	{ type: 1, name: "Modern", ico: 'assets/Ship-02-256.png', desc: 'Carrier (5), 2 x Warship (4), Frigate (3), Missle Submarine (1)'},
 ]
 
 fleetSelectionTemplate.innerHTML = `
@@ -31,10 +30,11 @@ fleetSelectionTemplate.innerHTML = `
 	width: 50%;
 	height: 55%;
 }
-.grid-item p {
+.grid-item h3 {
 	font-size: 2rem;
 }
 .control-row {
+	margin-top: 1rem;
 	text-align: left;
 }
 .control-row img {
@@ -51,6 +51,13 @@ fleetSelectionTemplate.innerHTML = `
 <div class="players">
 	<h2>Choose Fleets</h2>
 	<div class="grid">
+		${fleetSelectionOptions.map(({name, ico, desc}) =>
+			`<div class="grid-item">
+				<h3>${name}</h3>
+				<img src="${ico}"></img>
+				<p>${desc}</p>
+			</div> `
+		).join(" ")}
 	</div>
 	<div class="control-row">
 		<img src="assets/Road-Left-256.png"></img>
@@ -65,9 +72,21 @@ class FleetSelection extends HTMLElement {
 		this.shadowRoot.appendChild(fleetSelectionTemplate.content.cloneNode(true))
 	}
 
+	makeFleetSelection(element) {
+		const filtered = fleetSelectionOptions.filter(({name}) =>
+			name === element.querySelector('h3').innerHTML
+		)
+		const selectionVal = filtered.length ? filtered[0].type : fleetSelectionOptions[0].type;
+		window.game.settings['fleet'] = selectionVal;
+		document.querySelector('.game-states-container').style.left = "-200%";
+	}
+
 	connectedCallback() {
 		this.shadowRoot.querySelector('.control-row img').addEventListener('click',
 			() => document.querySelector('.game-states-container').style.left = 0
+		)
+		this.shadowRoot.querySelectorAll('.grid-item').forEach((elem) =>
+			elem.addEventListener('click', () => this.makeFleetSelection(elem))
 		)
 	}
 }

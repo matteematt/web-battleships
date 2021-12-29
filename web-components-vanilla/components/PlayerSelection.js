@@ -31,7 +31,7 @@ playerSelectionTemplate.innerHTML = `
 	object-fit: contain;
 	width: 10rem;
 }
-.grid-item p {
+.grid-item h3 {
 	font-size: 2rem;
 }
 </style>
@@ -40,7 +40,7 @@ playerSelectionTemplate.innerHTML = `
 	<div class="grid">
 		${playerSelectionOptions.map(({name, ico}) =>
 			`<div class="grid-item">
-				<p>${name}</p>
+				<h3>${name}</h3>
 				<img src="${ico}"></img>
 			</div>`
 		).join(" ")}
@@ -57,7 +57,7 @@ class PlayerSelection extends HTMLElement {
 
 	makeVsSelection(element) {
 		const filtered = playerSelectionOptions.filter(({name}) =>
-			name === element.querySelector('p').innerHTML
+			name === element.querySelector('h3').innerHTML
 		)
 		const selectionVal = filtered.length ? filtered[0].type : playerSelectionOptions[0].type;
 		window.game.settings['vs'] = selectionVal;
