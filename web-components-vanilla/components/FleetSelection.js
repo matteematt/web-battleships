@@ -1,9 +1,9 @@
 const fleetSelectionTemplate = document.createElement('template')
 
 const fleetSelectionOptions = [
-	{ type: 0, name: "Classic", ico: 'assets/Ship-01-256.png', desc: 'Carrier (5), Battleship (4), Destroyer (3), Submarine (3), Patrol (2)'},
+	{ type: 0, name: "Classic", ico: 'assets/Ship-02-256.png', desc: 'Carrier (5), Battleship (4), Destroyer (3), Submarine (3), Patrol (2)'},
 	{ type: 1, name: "Age of Sail", ico: 'assets/Sailor-Wheel-256.png', desc: '4 x Ship of the Line (4), Corvette (3), 2 x Privateer (2)'},
-	{ type: 1, name: "Modern", ico: 'assets/Ship-02-256.png', desc: 'Carrier (5), 2 x Warship (4), Frigate (3), Missle Submarine (1)'},
+	{ type: 1, name: "Modern", ico: 'assets/Ship-01-256.png', desc: 'Carrier (5), 2 x Warship (4), Frigate (3), Missle Submarine (1)'},
 ]
 
 fleetSelectionTemplate.innerHTML = `
@@ -79,6 +79,8 @@ class FleetSelection extends HTMLElement {
 		const selectionVal = filtered.length ? filtered[0].type : fleetSelectionOptions[0].type;
 		window.game.settings['fleet'] = selectionVal;
 		document.querySelector('.game-states-container').style.left = "-200%";
+		// game.js
+		setupGameBoard();
 	}
 
 	connectedCallback() {
