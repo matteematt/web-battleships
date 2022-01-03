@@ -5,12 +5,14 @@
 	<script src="components/Grid.js"></script>
 	<script src="components/PlayerSelection.js"></script>
 	<script src="components/FleetSelection.js"></script>
+	<script src="components/MessageBoard.js"></script>
 	<script src="game.js"></script>
 	<script>
 		// Init game state object
 		window.game = {
 			settings: {},
 			board: [[],[]],
+			messages: [],
 		}
 	</script>
 	<!-- Need other meta things here -->
@@ -24,9 +26,12 @@
 		<div class="state-fleet">
 			<fleet-selection></fleet-selection>
 		</div>
-		<div class="state-grid">
-			<battleship-grid player="0"></battleship-grid>
-			<battleship-grid player="1"></battleship-grid>
+		<div>
+			<message-board></message-board>
+			<div class="state-grid">
+				<battleship-grid player="0"></battleship-grid>
+				<battleship-grid player="1"></battleship-grid>
+			</div>
 		</div>
 	</div>
 </body>
