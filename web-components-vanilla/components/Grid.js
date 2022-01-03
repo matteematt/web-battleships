@@ -53,6 +53,15 @@ function gridRefToXY(gridRef) {
 	}
 }
 
+/**
+ * Example
+ * @param {x: 1, y: 8}
+ * @return H2
+ */
+function gridXYToRef(XY) {
+	return `${ROWS[XY.y]}${COLS[XY.x]}`
+}
+
 class Grid extends HTMLElement {
 	constructor() {
 		super();
@@ -65,15 +74,18 @@ class Grid extends HTMLElement {
 		const boardNum = parseInt(this.getAttribute('player'));
 		if (window.game.settings.playersTurn === boardNum) return;
 		const xy = gridRefToXY(gridElement.innerHTML);
+		let result = "MISS";
 		if (window.game.board[boardNum].some(({x,y}) => x === xy.x && y === xy.y)) {
 			window.game.board[boardNum] =
 				window.game.board[boardNum].filter(({x,y}) => !(x === xy.x && y === xy.y))
 			gridElement.classList.add('hit')
-			addMessageToMessageBoard([`Player ${window.game.settings.playersTurn === 0 ? "one" : "two"} HIT!`]);
+			result = "HIT";
 		} else {
 			gridElement.classList.add('miss')
-			addMessageToMessageBoard([`Player ${window.game.settings.playersTurn === 0 ? "one" : "two"} MISS!`]);
 		}
+		addMessageToMessageBoard([`Player ${
+			window.game.settings.playersTurn === 0 ? "one" : "two"
+		} attacks ${gridElement.innerHTML} - ${result}!`]);
 		window.game.settings.playersTurn = window.game.settings.playersTurn === 0 ? 1 : 0;
 		// game.js
 		startTurn();

@@ -7,12 +7,18 @@
 	<script src="components/FleetSelection.js"></script>
 	<script src="components/MessageBoard.js"></script>
 	<script src="game.js"></script>
+	<script src="cpuPlayer.js"></script>
 	<script>
 		// Init game state object
 		window.game = {
 			settings: {},
 			board: [[],[]],
 			messages: [],
+			cpu: {
+				hits: [],
+				guesses: [],
+				mode: 0,
+			},
 		}
 	</script>
 	<!-- Need other meta things here -->

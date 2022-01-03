@@ -103,14 +103,16 @@ function startTurn() {
 		// Don't need to do anything if it is a non-cpu player's turn
 		return;
 	}
+	// cpuPlayer.js
+	startCPUPlayerTurn();
 }
 
 function checkIfGameFinished() {
-	if (window.game.board[0].length === 0) {
+	if (window.game.board[1].length === 0) {
 		window.game.settings.gameDone = true;
 		addMessageToMessageBoard(['Player One WON!!'])
 		return true;
-	} else if (window.game.board[1].length === 0) {
+	} else if (window.game.board[0].length === 0) {
 		window.game.settings.gameDone = true;
 		// playerSelectionOptions from PlayerSelection.js
 		const playerTwoType = playerSelectionOptions.filter(({type}) => type === window.game.settings.vs)[0].name
