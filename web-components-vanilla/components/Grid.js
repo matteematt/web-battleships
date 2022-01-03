@@ -61,16 +61,18 @@ class Grid extends HTMLElement {
 	}
 
 	clickGridValue(gridElement) {
-		const boardNum = parseInt(this.getAttribute('player'))
+		if (window.game.settings.gameDone) return;
+		const boardNum = parseInt(this.getAttribute('player'));
 		if (window.game.settings.playersTurn === boardNum) return;
-		const gridRef = gridElement.innerHTML;
-		const xy = gridRefToXY(gridRef)
+		const xy = gridRefToXY(gridElement.innerHTML);
 		if (window.game.board[boardNum].some(({x,y}) => x === xy.x && y === xy.y)) {
 			window.game.board[boardNum] =
 				window.game.board[boardNum].filter(({x,y}) => !(x === xy.x && y === xy.y))
 			gridElement.classList.add('hit')
+			addMessageToMessageBoard([`Player ${window.game.settings.playersTurn === 0 ? "one" : "two"} HIT!`]);
 		} else {
 			gridElement.classList.add('miss')
+			addMessageToMessageBoard([`Player ${window.game.settings.playersTurn === 0 ? "one" : "two"} MISS!`]);
 		}
 		window.game.settings.playersTurn = window.game.settings.playersTurn === 0 ? 1 : 0;
 		// game.js

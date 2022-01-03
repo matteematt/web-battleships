@@ -44,6 +44,8 @@ function setupGameBoard() {
 	buildBoard(0);
 	buildBoard(1);
 	window.game.settings.playersTurn = 0;
+	window.game.settings.gameDone = false;
+	startTurn();
 	console.log(window.game)
 }
 
@@ -92,10 +94,28 @@ function getShipPlacementFn(type) {
 // Controls the turn, called when someone has finished their turn or once the game board has
 // been initialised
 function startTurn() {
+	if (checkIfGameFinished()) return;
+	addMessageToMessageBoard([`It is player ${window.game.settings.playersTurn === 0 ? "one" : "two"}'s turn!`]);
+
 	if (window.game.settings.playersTurn === 0 ||
 	    window.game.settings.playersTurn === 1 &&
 	    window.game.settings.vs === 0)  {
 		// Don't need to do anything if it is a non-cpu player's turn
 		return;
 	}
+}
+
+function checkIfGameFinished() {
+	if (window.game.board[0].length === 0) {
+		window.game.settings.gameDone = true;
+		addMessageToMessageBoard(['Player One WON!!'])
+		return true;
+	} else if (window.game.board[1].length === 0) {
+		window.game.settings.gameDone = true;
+		// playerSelectionOptions from PlayerSelection.js
+		const playerTwoType = playerSelectionOptions.filter(({type}) => type === window.game.settings.vs)[0].name
+		addMessageToMessageBoard([`Player Two (${playerTwoType}) WON!!`])
+		return true;
+	}
+	return false;
 }
