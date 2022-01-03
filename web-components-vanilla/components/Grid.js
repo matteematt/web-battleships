@@ -67,6 +67,9 @@ class Grid extends HTMLElement {
 		super();
 		this.attachShadow({mode: 'open'})
 		this.shadowRoot.appendChild(gridTemplate.content.cloneNode(true));
+		// Need to save the reference to the functions used as callbacks so we
+		// can de-register the callback if we've already clicked it
+		this.gridCallbacks = {};
 	}
 
 	clickGridValue(gridElement) {
@@ -80,6 +83,8 @@ class Grid extends HTMLElement {
 				window.game.board[boardNum].filter(({x,y}) => !(x === xy.x && y === xy.y))
 			gridElement.classList.add('hit')
 			result = "HIT";
+			gridElement.removeEventListener('click', this.gridCallbacks[gridElement.innerHTML]);
+			delete this.gridCallbacks[gridElement.innerHTML]
 		} else {
 			gridElement.classList.add('miss')
 		}
@@ -92,9 +97,10 @@ class Grid extends HTMLElement {
 	}
 
 	connectedCallback() {
-		this.shadowRoot.querySelectorAll('.grid-container div').forEach((gridSpace) =>
-			gridSpace.addEventListener('click', () => this.clickGridValue(gridSpace))
-		)
+		this.shadowRoot.querySelectorAll('.grid-container div').forEach((gridSpace) => {
+			this.gridCallbacks[gridSpace.innerHTML] = () => this.clickGridValue(gridSpace)
+			gridSpace.addEventListener('click', this.gridCallbacks[gridSpace.innerHTML])
+		})
 	}
 }
 
