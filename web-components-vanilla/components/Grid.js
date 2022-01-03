@@ -1,6 +1,6 @@
 const gridTemplate = document.createElement('template')
 
-const COLS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 'X']
+const COLS = ['1','2','3','4','5','6','7','8','9','X']
 const ROWS = ['A','B','C','D','E','F','G','H','I','J']
 
 const grid = ROWS.map((r) => COLS.map((c) => `${r}${c}`)).flat()
@@ -26,8 +26,12 @@ gridTemplate.innerHTML = `
 .grid-container div:hover {
 	background-color: green;
 }
-.grid-container div.sel {
+.grid-container div.miss {
 	visibility: hidden;
+}
+.grid-container div.hit {
+	background-color: red;
+	color: red;
 }
 </style>
 <div class="grid">
@@ -37,6 +41,17 @@ gridTemplate.innerHTML = `
 </div>
 `;
 
+/**
+ * Example
+ * @param H2
+ * @return {x: 1, y: 8}
+ */
+function gridRefToXY(gridRef) {
+	return {
+		x: COLS.indexOf(gridRef[1]),
+		y: ROWS.indexOf(gridRef[0]),
+	}
+}
 
 class Grid extends HTMLElement {
 	constructor() {
@@ -46,8 +61,20 @@ class Grid extends HTMLElement {
 	}
 
 	clickGridValue(gridElement) {
-		// TODO: Check whether this is where a ship is
-		gridElement.classList.add('sel')
+		const boardNum = parseInt(this.getAttribute('player'))
+		if (window.game.settings.playersTurn === boardNum) return;
+		const gridRef = gridElement.innerHTML;
+		const xy = gridRefToXY(gridRef)
+		if (window.game.board[boardNum].some(({x,y}) => x === xy.x && y === xy.y)) {
+			window.game.board[boardNum] =
+				window.game.board[boardNum].filter(({x,y}) => !(x === xy.x && y === xy.y))
+			gridElement.classList.add('hit')
+		} else {
+			gridElement.classList.add('miss')
+		}
+		window.game.settings.playersTurn = window.game.settings.playersTurn === 0 ? 1 : 0;
+		// game.js
+		startTurn();
 	}
 
 	connectedCallback() {

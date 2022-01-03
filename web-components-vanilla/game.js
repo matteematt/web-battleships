@@ -1,3 +1,7 @@
+/**
+ * SETUP
+ */
+
 // TODO: This and fleetSelectionOptions should use the same source
 const fleetTypes = [
 	[5,4,3,3,2],
@@ -39,6 +43,7 @@ function setupGameBoard() {
 
 	buildBoard(0);
 	buildBoard(1);
+	window.game.settings.playersTurn = 0;
 	console.log(window.game)
 }
 
@@ -77,5 +82,20 @@ function getShipPlacementFn(type) {
 		case 1: return ({x,y}) => ({x: (x+1), y})
 		case 2: return ({x,y}) => ({x, y: (y+1)})
 		case 3: return ({x,y}) => ({x: (x-1), y})
+	}
+}
+
+/**
+ * Game
+ */
+
+// Controls the turn, called when someone has finished their turn or once the game board has
+// been initialised
+function startTurn() {
+	if (window.game.settings.playersTurn === 0 ||
+	    window.game.settings.playersTurn === 1 &&
+	    window.game.settings.vs === 0)  {
+		// Don't need to do anything if it is a non-cpu player's turn
+		return;
 	}
 }
