@@ -6,6 +6,8 @@ html {
 	--item-colour: #191917;
 	--section-radius: 6px;
 	--item-colour-hover: #0e3313;
+	overflow-x: hidden;
+	overflow-y: hidden;
 }
 
 h1 {
@@ -19,6 +21,9 @@ h1 {
 	grid-gap: 2rem;
   width: calc(var(--contains) * 100%);
 	position: absolute;
+	/* Transform (translateX) more performative with animation than left */
+	transform: translateX(0%);
+	transition: transform 225ms ease-in;
 }
 
 .state-grid {

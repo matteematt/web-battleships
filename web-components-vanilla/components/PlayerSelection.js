@@ -61,7 +61,7 @@ class PlayerSelection extends HTMLElement {
 		)
 		const selectionVal = filtered.length ? filtered[0].type : playerSelectionOptions[0].type;
 		window.game.settings['vs'] = selectionVal;
-		document.querySelector('.game-states-container').style.left = "-100%";
+		document.querySelector('.game-states-container').style.transform = 'translateX(-33.5%)'
 	}
 
 	connectedCallback() {

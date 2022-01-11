@@ -78,14 +78,15 @@ class FleetSelection extends HTMLElement {
 		)
 		const selectionVal = filtered.length ? filtered[0].type : fleetSelectionOptions[0].type;
 		window.game.settings['fleet'] = selectionVal;
-		document.querySelector('.game-states-container').style.left = "-200.5%";
+		document.querySelector('.game-states-container').style.transform = 'translateX(-67%)'
+		document.querySelector('html').style['overflow-y'] = 'auto'
 		// game.js
 		setupGameBoard();
 	}
 
 	connectedCallback() {
 		this.shadowRoot.querySelector('.control-row img').addEventListener('click',
-			() => document.querySelector('.game-states-container').style.left = 0
+			() => document.querySelector('.game-states-container').style.transform = 'translateX(0%)'
 		)
 		this.shadowRoot.querySelectorAll('.grid-item').forEach((elem) =>
 			elem.addEventListener('click', () => this.makeFleetSelection(elem))
