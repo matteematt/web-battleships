@@ -78,7 +78,7 @@ class FleetSelection extends HTMLElement {
 		)
 		const selectionVal = filtered.length ? filtered[0].type : fleetSelectionOptions[0].type;
 		window.game.settings['fleet'] = selectionVal;
-		document.querySelector('.game-states-container').style.left = "-200%";
+		document.querySelector('.game-states-container').style.left = "-200.5%";
 		// game.js
 		setupGameBoard();
 	}
