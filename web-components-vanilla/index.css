@@ -15,7 +15,7 @@ h1 {
 }
 
 .game-states-container {
-	--contains: 3;
+	--contains: 4;
 	display: grid;
 	grid-template-columns: repeat(var(--contains), 1fr);
 	grid-gap: 2rem;
