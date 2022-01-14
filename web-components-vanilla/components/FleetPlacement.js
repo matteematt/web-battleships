@@ -30,6 +30,9 @@ fleetPlacementTemplate.innerHTML = `
 	border-radius: var(--section-radius);
 	background-color: var(--item-colour);
 }
+.menu hr {
+	width: 95%;
+}
 .grid {
 	background-color: var(--item-colour);
 	border-radius: var(--section-radius);
@@ -56,9 +59,9 @@ fleetPlacementTemplate.innerHTML = `
 		<div class="menu">
 			<h3>Place Fleet</h3>
 			<div class="fleet-choice"> </div>
-			<br>
-			<p>Or randomly place your fleet</p>
-			<button class="random-placement">Test</button>
+			<hr>
+			<p>Randomly place your fleet</p>
+			<button class="random-placement">Shuffle</button>
 		</div>
 		<div class="grid">
 			<div class="grid-container">
@@ -78,6 +81,15 @@ class FleetPlacement extends HTMLElement {
 		super();
 		this.attachShadow({mode: 'open'})
 		this.shadowRoot.appendChild(fleetPlacementTemplate.content.cloneNode(true));
+	}
+
+	setupFleetMenuOption() {
+		const fleetOptions = fleetTypes.reduce((html,{s,n}) =>
+			`${html}<div class="fleet-option">
+				<h4>${n}</h4>
+				<p>Size: ${s}</p>
+			</div> `,"")
+		this.shadowRoot.querySelector('.fleet-choice').innerHTML = fleetOptions;
 	}
 
 	backButtonCallback() {
@@ -103,6 +115,7 @@ class FleetPlacement extends HTMLElement {
 	connectedCallback() {
 		this.backButtonCallback();
 		this.randomFleetButtonCallback();
+		this.setupFleetMenuOption();
 	}
 }
 

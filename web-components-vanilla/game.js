@@ -4,9 +4,12 @@
 
 // TODO: This and fleetSelectionOptions should use the same source
 const fleetTypes = [
-	[5,4,3,3,2],
-	[4,4,4,4,3,2,2],
-	[5,4,4,3,1],
+	[{s:5, n:'Carrier'},{s:4, n:'Carrier'},{s:3, n:'Destroyer'},{s:3, n:'Submarine'},{s:2,n:'Patrol'}],
+	[
+		{s:4, n:'Ship of the Line'},{s:4, n:'Ship of the Line'},{s:4, n:'Ship of the Line'},{s:4, n:'Ship of the Line'},
+		{s:3, n:'Corvette'},{s:2, n:'Privateer'},{s:2, n:'Privateer'},
+	],
+	[{s:5, n:'Carrier'},{s:4, n:'Warship'},{s:4, n:'Warship'},{s:3, n:'Frigate'},{s:1,n:'Missle Submarine'}],
 ]
 
 /**
@@ -14,7 +17,7 @@ const fleetTypes = [
  * sets up the game board with the ships added
  */
 function setupGameBoard() {
-	const selectedFleet = fleetTypes[parseInt(window.game.settings.fleet)]
+	const selectedFleet = fleetTypes[parseInt(window.game.settings.fleet)].map(({s}) => s);
 	const MAX_PLACEMENT_ATTEMPTS = 20;
 
 	const buildBoard = function(boardNumber) {
