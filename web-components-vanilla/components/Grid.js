@@ -8,7 +8,7 @@ const grid = ROWS.map((r) => COLS.map((c) => `${r}${c}`)).flat()
 gridTemplate.innerHTML = `
 <style>
 .grid {
-	background-color: var(--section-colour);
+	background-color: var(--primary-colour-two);
 	border-radius: var(--section-radius);
 	aspect-ratio: 1/1;
 }

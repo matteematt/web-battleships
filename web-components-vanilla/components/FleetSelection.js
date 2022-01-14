@@ -9,7 +9,7 @@ const fleetSelectionOptions = [
 fleetSelectionTemplate.innerHTML = `
 <style>
 .players {
-	background-color: var(--section-colour);
+	background-color: var(--primary-colour-two);
 	border-radius: var(--section-radius);
 	padding: 1rem;
 }
@@ -19,11 +19,11 @@ fleetSelectionTemplate.innerHTML = `
 	gap: 2rem;
 }
 .grid-item {
-	background-color: var(--item-colour);
+	background-color: var(--primary-colour-three);
 	border-radius: var(--section-radius);
 }
 .grid-item:hover {
-	background-color: var(--item-colour-hover);
+	background-color: var(--colour-hover);
 }
 .grid-item img {
 	object-fit: contain;
@@ -38,14 +38,14 @@ fleetSelectionTemplate.innerHTML = `
 	text-align: left;
 }
 .control-row img {
-	background-color: var(--item-colour);
+	background-color: var(--primary-colour-three);
 	object-fit: contain;
 	width: 3rem;
 	padding: 10px;
 	border-radius: var(--section-radius);
 }
 .control-row img:hover {
-	background-color: var(--item-colour-hover);
+	background-color: var(--colour-hover);
 }
 </style>
 <div class="players">
@@ -78,6 +78,8 @@ class FleetSelection extends HTMLElement {
 		)
 		const selectionVal = filtered.length ? filtered[0].type : fleetSelectionOptions[0].type;
 		window.game.settings['fleet'] = selectionVal;
+		// FleetPlacement.js
+		setFleetPlacementFleetValue(selectionVal);
 		document.querySelector('.game-states-container').style.transform = 'translateX(-50.125%)'
 		document.querySelector('html').style['overflow-y'] = 'auto'
 		// game.js

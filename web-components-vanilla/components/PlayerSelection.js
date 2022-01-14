@@ -10,7 +10,7 @@ const playerSelectionOptions = [
 playerSelectionTemplate.innerHTML = `
 <style>
 .players {
-	background-color: var(--section-colour);
+	background-color: var(--primary-colour-two);
 	border-radius: var(--section-radius);
 	padding: 1rem;
 }
@@ -20,12 +20,12 @@ playerSelectionTemplate.innerHTML = `
 	gap: 2rem;
 }
 .grid-item {
-	background-color: var(--item-colour);
+	background-color: var(--primary-colour-three);
 	border-radius: var(--section-radius);
 	padding: 10px;
 }
 .grid-item:hover {
-	background-color: var(--item-colour-hover);
+	background-color: var(--colour-hover);
 }
 .grid-item img {
 	object-fit: contain;

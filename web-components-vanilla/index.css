@@ -1,11 +1,12 @@
 html {
-	text-align: center;
-	background-color: #2a2a28;
-	color: white;
-	--section-colour: #21211e;
-	--item-colour: #191917;
+	--primary-colour-one: #2a2a28;
+	--primary-colour-two: #21211e;
+	--primary-colour-three: #191917;
+	--colour-hover: #0e3313;
 	--section-radius: 6px;
-	--item-colour-hover: #0e3313;
+	text-align: center;
+	background-color: var(--primary-colour-one);
+	color: white;
 	overflow-x: hidden;
 	overflow-y: hidden;
 }
