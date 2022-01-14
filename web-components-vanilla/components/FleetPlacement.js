@@ -11,16 +11,6 @@ fleetPlacementTemplate.innerHTML = `
 	margin-top: 1rem;
 	text-align: left;
 }
-.control-row img {
-	background-color: var(--primary-colour-three);
-	object-fit: contain;
-	width: 3rem;
-	padding: 10px;
-	border-radius: var(--section-radius);
-}
-.control-row img:hover {
-	background-color: var(--colour-hover);
-}
 .container {
 	display: grid;
 	grid-template-columns: 1fr 2fr;
@@ -60,11 +50,21 @@ fleetPlacementTemplate.innerHTML = `
 }
 .grid-container div {
 	padding: 18%;
-	background-color: blue;
+	background-color: var(--grid-colour-base);
 	aspect-ratio: 1/1;
 }
 .grid-container div:hover {
-	background-color: green;
+	background-color: var(--grid-colour-hover);
+}
+img.form-control {
+	background-color: var(--primary-colour-three);
+	object-fit: contain;
+	width: 3rem;
+	padding: 10px;
+	border-radius: var(--section-radius);
+}
+img.form-control:hover {
+	background-color: var(--colour-hover);
 }
 </style>
 <div class="section">
@@ -78,13 +78,17 @@ fleetPlacementTemplate.innerHTML = `
 			<button class="random-placement">Shuffle</button>
 		</div>
 		<div class="grid">
+			<div class="placement-control-row">
+				<img src="assets/Command-Undo-256.png" class="form-control"/>
+				<img src="assets/Command-Redo-256.png" class="form-control"/>
+			</div>
 			<div class="grid-container">
 				${grid.map((x) => `<div>${x}</div>`).join('')}
 			</div>
 		</div>
 	</div>
 	<div class="control-row">
-		<img src="assets/Road-Left-256.png"></img>
+		<img src="assets/Road-Left-256.png" class="form-control"></img>
 	</div>
 </div>
 `;

@@ -3,6 +3,8 @@ html {
 	--primary-colour-two: #21211e;
 	--primary-colour-three: #191917;
 	--colour-hover: #0e3313;
+	--grid-colour-base: #2c2cf2;
+	--grid-colour-hover: #36b036;
 	--section-radius: 6px;
 	text-align: center;
 	background-color: var(--primary-colour-one);
@@ -31,4 +33,15 @@ h1 {
 	display: grid;
 	grid-template-columns: repeat(2, 1fr);
 	grid-gap: 2rem;
+}
+
+img.form-control {
+	background-color: var(--primary-colour-three);
+	object-fit: contain;
+	width: 3rem;
+	padding: 10px;
+	border-radius: var(--section-radius);
+}
+img.form-control:hover {
+	background-color: var(--colour-hover);
 }

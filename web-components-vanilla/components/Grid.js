@@ -20,11 +20,11 @@ gridTemplate.innerHTML = `
 }
 .grid-container div {
 	padding: 18%;
-	background-color: blue;
+	background-color: var(--grid-colour-base);
 	aspect-ratio: 1/1;
 }
 .grid-container div:hover {
-	background-color: green;
+	background-color: var(--grid-colour-hover);
 }
 .grid-container div.miss {
 	visibility: hidden;
