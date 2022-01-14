@@ -18,7 +18,20 @@ function buildUtils() {
 		 */
 		gridXYToRef(XY) {
 			return `${ROWS[XY.y]}${COLS[XY.x]}`
-		}
+		},
+		directionFn: [
+			({x,y}) => ({x, y: (y-1)}),
+			({x,y}) => ({x: (x+1), y}),
+			({x,y}) => ({x, y: (y+1)}),
+			({x,y}) => ({x: (x-1), y}),
+		],
+		directions: {
+			up: 0,
+			right: 1,
+			down: 2,
+			left: 3,
+		},
+		BOARD_DIM: 10,
 	});
 	return {
 		grid: buildGrid(),

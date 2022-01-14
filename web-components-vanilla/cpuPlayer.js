@@ -132,11 +132,13 @@ function aiMakeGuess(guess) {
 // Makes a completely random guess for any remaining tile
 // Sets guesses and hits, and returns true/false depending on whether it was a hit or not
 function aiRandomSearch() {
-	const BOARD_DIM = 10;
 	let gotValidGuess = false;
 	let guess = {};
 	while (!gotValidGuess) {
-		guess = {x: Math.floor(Math.random() * BOARD_DIM), y: Math.floor(Math.random() * BOARD_DIM)}
+		guess = {
+			x: Math.floor(Math.random() * utils.grid.BOARD_DIM),
+			y: Math.floor(Math.random() * utils.grid.BOARD_DIM)
+		}
 		if (!game.cpu.guesses.some(({x,y}) => x === guess.x && y === guess.y)) {
 			gotValidGuess = true
 		}
@@ -148,7 +150,7 @@ function aiRandomSearch() {
 // Gets adjacent values to a certain value (ships are not placed diagonally)
 
 function getAdjacent({x,y}) {
-	const BOARD_DIM = 10;
+	const BOARD_DIM = utils.grid.BOARD_DIM;
 	return [
 		{x: (x), y: (y-1)},
 		{x: (x-1), y: (y)},
@@ -221,7 +223,7 @@ function aiGetAttackFunc(lineType, rightDown) {
 // Returns a boolean signal of whether to stay in attack mode or not
 function aiAttack() {
 	const getGuesses = (lineSearchFunc) => {
-		const BOARD_DIM = 10;
+		const BOARD_DIM = utils.grid.BOARD_DIM;
 		const candidates =  Array(BOARD_DIM).fill(0).reduce((acum, curr) => {
 			const latest = acum[acum.length - 1];
 			return [...acum, lineSearchFunc(latest)]

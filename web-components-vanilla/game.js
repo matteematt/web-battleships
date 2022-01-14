@@ -55,14 +55,16 @@ function setupGameBoard() {
 
 
 function placeShipOnBoard(boardNumber, placingShip) {
-	const BOARD_DIM = 10;
-	const rootPlacement = {x: Math.floor(Math.random() * BOARD_DIM), y: Math.floor(Math.random() * BOARD_DIM)};
+	const rootPlacement = {
+		x: Math.floor(Math.random() * utils.grid.BOARD_DIM),
+		y: Math.floor(Math.random() * utils.grid.BOARD_DIM)
+	};
 	const nextShipSpot = getShipPlacementFn(Math.floor(Math.random() * 4));
 	const newShipPlacement = [rootPlacement];
 	for (let i = 1; i < placingShip; i++) {
 		newShipPlacement.push(nextShipSpot(newShipPlacement[newShipPlacement.length - 1]))
 	}
-	if (!checkShipPlacementIsValid(boardNumber, BOARD_DIM, newShipPlacement)) {
+	if (!checkShipPlacementIsValid(boardNumber, utils.grid.BOARD_DIM, newShipPlacement)) {
 		throw new Error("Invalid ship placement, try again")
 	} else {
 		window.game.board[boardNumber] = window.game.board[boardNumber].concat(newShipPlacement);
