@@ -80,7 +80,7 @@ class FleetPlacement extends HTMLElement {
 		this.shadowRoot.appendChild(fleetPlacementTemplate.content.cloneNode(true));
 	}
 
-	connectedCallback() {
+	backButtonCallback() {
 		// TODO: Should really make this back button its own component in a real app
 		this.shadowRoot.querySelector('.control-row img').addEventListener('click', () => {
 			document.querySelector('.game-states-container').style.transform = 'translateX(-25.05%)';
@@ -90,6 +90,19 @@ class FleetPlacement extends HTMLElement {
 				document.querySelector('html').style['overflow-y'] = 'hidden';
 			}, 1000);
 		})
+	}
+
+	randomFleetButtonCallback() {
+		this.shadowRoot.querySelector('.random-placement').addEventListener('click', () => {
+			document.querySelector('.game-states-container').style.transform = 'translateX(-75.225%)';
+			// game.js
+			setupGameBoard();
+		})
+	}
+
+	connectedCallback() {
+		this.backButtonCallback();
+		this.randomFleetButtonCallback();
 	}
 }
 
