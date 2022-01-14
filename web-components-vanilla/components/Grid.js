@@ -1,10 +1,5 @@
 const gridTemplate = document.createElement('template')
 
-const COLS = ['1','2','3','4','5','6','7','8','9','X']
-const ROWS = ['A','B','C','D','E','F','G','H','I','J']
-
-const grid = ROWS.map((r) => COLS.map((c) => `${r}${c}`)).flat()
-
 gridTemplate.innerHTML = `
 <style>
 .grid {
@@ -36,7 +31,7 @@ gridTemplate.innerHTML = `
 </style>
 <div class="grid">
 	<div class="grid-container">
-		${grid.map((x) => `<div>${x}</div>`).join('')}
+		${utils.grid.grid.map((x) => `<div>${x}</div>`).join('')}
 	</div>
 </div>
 `;
