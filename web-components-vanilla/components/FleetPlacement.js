@@ -3,7 +3,7 @@ const fleetPlacementTemplate = document.createElement('template')
 fleetPlacementTemplate.innerHTML = `
 <style>
 .section {
-	background-color: var(--section-colour);
+	background-color: var(--primary-colour-two);
 	border-radius: var(--section-radius);
 	padding: 1rem;
 }
@@ -12,14 +12,14 @@ fleetPlacementTemplate.innerHTML = `
 	text-align: left;
 }
 .control-row img {
-	background-color: var(--item-colour);
+	background-color: var(--primary-colour-three);
 	object-fit: contain;
 	width: 3rem;
 	padding: 10px;
 	border-radius: var(--section-radius);
 }
 .control-row img:hover {
-	background-color: var(--item-colour-hover);
+	background-color: var(--colour-hover);
 }
 .container {
 	display: grid;
@@ -28,13 +28,27 @@ fleetPlacementTemplate.innerHTML = `
 }
 .menu {
 	border-radius: var(--section-radius);
-	background-color: var(--item-colour);
+	background-color: var(--primary-colour-three);
 }
 .menu hr {
 	width: 95%;
 }
+.fleet-choice {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 1rem;
+}
+.fleet-choice div {
+	background-color: var(--primary-colour-one);
+	margin: 1rem;
+	border-radius: var(--section-radius);
+}
+.fleet-choice div:hover,
+.fleet-choice div[selected="true"] {
+	background-color: var(--colour-hover);
+}
 .grid {
-	background-color: var(--item-colour);
+	background-color: var(--primary-colour-three);
 	border-radius: var(--section-radius);
 	aspect-ratio: 1/1;
 }
@@ -75,8 +89,13 @@ fleetPlacementTemplate.innerHTML = `
 </div>
 `;
 
+function setFleetPlacementFleetValue(fleetNumber) {
+	document.querySelector('fleet-placement').setAttribute('fleetnumber',window.game.settings.fleet);
+}
+
 // TODO: Should really only use one component just for the grid
 class FleetPlacement extends HTMLElement {
+	static get observedAttributes() { return ['fleetnumber'] }
 	constructor() {
 		super();
 		this.attachShadow({mode: 'open'})
@@ -84,12 +103,20 @@ class FleetPlacement extends HTMLElement {
 	}
 
 	setupFleetMenuOption() {
-		const fleetOptions = fleetTypes.reduce((html,{s,n}) =>
+		const fleetOptions = fleetTypes[window.game.settings.fleet]
+			.reduce((html,{s,n}) =>
 			`${html}<div class="fleet-option">
 				<h4>${n}</h4>
 				<p>Size: ${s}</p>
 			</div> `,"")
 		this.shadowRoot.querySelector('.fleet-choice').innerHTML = fleetOptions;
+		const fleetChoiceElems = this.shadowRoot.querySelectorAll('.fleet-choice div');
+		fleetChoiceElems.forEach((elem) => {
+			elem.addEventListener('click', () => {
+				fleetChoiceElems.forEach((e) => e.removeAttribute('selected'));
+				elem.setAttribute('selected','true');
+			})
+		});
 	}
 
 	backButtonCallback() {
@@ -115,7 +142,13 @@ class FleetPlacement extends HTMLElement {
 	connectedCallback() {
 		this.backButtonCallback();
 		this.randomFleetButtonCallback();
-		this.setupFleetMenuOption();
+	}
+
+	attributeChangedCallback(name, oldValue, newValue) {
+		if (name === 'fleetnumber') {
+			// We are considering a change in fleetNumber attribute to signal a reset of this component
+			this.setupFleetMenuOption();
+		}
 	}
 }
 
