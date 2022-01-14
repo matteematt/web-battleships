@@ -35,13 +35,3 @@ h1 {
 	grid-gap: 2rem;
 }
 
-img.form-control {
-	background-color: var(--primary-colour-three);
-	object-fit: contain;
-	width: 3rem;
-	padding: 10px;
-	border-radius: var(--section-radius);
-}
-img.form-control:hover {
-	background-color: var(--colour-hover);
-}

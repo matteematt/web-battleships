@@ -120,7 +120,7 @@ function aiMakeGuess(guess) {
 		throw new Error(`Double chosen guess ${x},${y}`)
 	}
 	window.game.cpu.guesses.push(guess)
-	const guessAsGridRef = gridXYToRef(guess);
+	const guessAsGridRef = utils.grid.gridXYToRef(guess);
 	console.log(`Making AI guess ${guessAsGridRef}`)
 	const guessedTile = Array.from(getPlayersTilesNodeList()).filter((elem) => elem.innerHTML === guessAsGridRef)[0];
 	const successGuess = window.game.board[0].some(({x,y}) => x === guess.x && y === guess.y)

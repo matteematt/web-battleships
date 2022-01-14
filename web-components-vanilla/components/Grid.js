@@ -41,26 +41,6 @@ gridTemplate.innerHTML = `
 </div>
 `;
 
-/**
- * Example
- * @param H2
- * @return {x: 1, y: 8}
- */
-function gridRefToXY(gridRef) {
-	return {
-		x: COLS.indexOf(gridRef[1]),
-		y: ROWS.indexOf(gridRef[0]),
-	}
-}
-
-/**
- * Example
- * @param {x: 1, y: 8}
- * @return H2
- */
-function gridXYToRef(XY) {
-	return `${ROWS[XY.y]}${COLS[XY.x]}`
-}
 
 class Grid extends HTMLElement {
 	constructor() {
@@ -76,7 +56,7 @@ class Grid extends HTMLElement {
 		if (window.game.settings.gameDone) return;
 		const boardNum = parseInt(this.getAttribute('player'));
 		if (window.game.settings.playersTurn === boardNum) return;
-		const xy = gridRefToXY(gridElement.innerHTML);
+		const xy = utils.grid.gridRefToXY(gridElement.innerHTML);
 		let result = "MISS";
 		if (window.game.board[boardNum].some(({x,y}) => x === xy.x && y === xy.y)) {
 			window.game.board[boardNum] =
