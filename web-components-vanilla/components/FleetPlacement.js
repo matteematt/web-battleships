@@ -53,7 +53,8 @@ fleetPlacementTemplate.innerHTML = `
 	background-color: var(--grid-colour-base);
 	aspect-ratio: 1/1;
 }
-.grid-container div:hover {
+.grid-container div:hover,
+.grid-container div[hover="true"] {
 	background-color: var(--grid-colour-hover);
 }
 img.form-control {
@@ -83,7 +84,7 @@ img.form-control:hover {
 				<img src="assets/Command-Redo-256.png" class="form-control"/>
 			</div>
 			<div class="grid-container">
-				${grid.map((x) => `<div>${x}</div>`).join('')}
+				${utils.grid.grid.map((x) => `<div>${x}</div>`).join('')}
 			</div>
 		</div>
 	</div>
@@ -100,16 +101,22 @@ function setFleetPlacementFleetValue(fleetNumber) {
 // TODO: Should really only use one component just for the grid
 class FleetPlacement extends HTMLElement {
 	static get observedAttributes() { return ['fleetnumber'] }
+
 	constructor() {
 		super();
 		this.attachShadow({mode: 'open'})
 		this.shadowRoot.appendChild(fleetPlacementTemplate.content.cloneNode(true));
+
+		this.placingShipSize = null;
+		this.placingShipAnchorSpot = null;
+		this.placedShips = {};
+		this.placingOrientation = utils.grid.directions.right;
 	}
 
 	setupFleetMenuOption() {
 		const fleetOptions = fleetTypes[window.game.settings.fleet]
 			.reduce((html,{s,n}) =>
-			`${html}<div class="fleet-option">
+			`${html}<div class="fleet-option" size="${s}">
 				<h4>${n}</h4>
 				<p>Size: ${s}</p>
 			</div> `,"")
@@ -119,6 +126,7 @@ class FleetPlacement extends HTMLElement {
 			elem.addEventListener('click', () => {
 				fleetChoiceElems.forEach((e) => e.removeAttribute('selected'));
 				elem.setAttribute('selected','true');
+				this.placingShipSize = parseInt(elem.getAttribute("size"));
 			})
 		});
 	}
@@ -143,9 +151,44 @@ class FleetPlacement extends HTMLElement {
 		})
 	}
 
+	clearGridItemHover() {
+		this.placingShipAnchorSpot = null;
+		this.shadowRoot.querySelectorAll('.grid-container div').forEach((elem) => elem.clearAttribute("hover"))
+	}
+
+	showGridItemHover(elem) {
+		this.placingShipAnchorSpot = elem.innerHTML;
+		if (this.placingShipAnchorSpot && this.placingShipSize) {
+			console.log(`Run overlay function, ${this.placingShipAnchorSpot}, ${this.placingShipSize}`)
+			const anchorXY = utils.grid.gridRefToXY(this.placingShipAnchorSpot);
+			const placedAt = Array(this.placingShipSize - 1).fill(0).reduce((acum, _) => {
+				const latest = acum[acum.length - 1];
+				return [...acum, utils.grid.directionFn[this.placingOrientation](latest)];
+			}, [anchorXY])
+			console.log(placedAt)
+			// TODO: Use findIndex to see if placedAt stays in bounds, or clashes with any placed ships
+		}
+	}
+
+	placementGridItemCallback() {
+		this.shadowRoot.querySelectorAll('.grid-container div').forEach((elem) => {
+			elem.addEventListener('mouseenter',() => this.showGridItemHover(elem))
+			elem.addEventListener('mouseleave',() => this.clearGridItemHover)
+		})
+	}
+
 	connectedCallback() {
 		this.backButtonCallback();
 		this.randomFleetButtonCallback();
+		this.placementGridItemCallback();
+		this.shadowRoot.querySelector('div.placement-control-row img.form-control:nth-child(1)')
+		.addEventListener('click', () => {
+			this.placingOrientation = this.placingOrientation > 0 ? this.placingOrientation - 1 : utils.grid.directions.left
+		})
+		this.shadowRoot.querySelector('div.placement-control-row img.form-control:nth-child(2)')
+		.addEventListener('click', () => {
+			this.placingOrientation = this.placingOrientation < 3 ? this.placingOrientation + 1 : utils.grid.directions.up
+		})
 	}
 
 	attributeChangedCallback(name, oldValue, newValue) {
