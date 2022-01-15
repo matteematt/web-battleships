@@ -6,7 +6,7 @@ const MESSAGES_FONT_SIZE = 1.2;
 messageBoardTemplate.innerHTML = `
 <style>
 .message-board {
-	background-color: var(--section-colour);
+	background-color: var(--primary-colour-two);
 	border-radius: var(--section-radius);
 	padding: 1rem;
 	margin-bottom: 2rem;

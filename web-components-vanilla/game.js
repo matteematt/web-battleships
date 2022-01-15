@@ -4,17 +4,20 @@
 
 // TODO: This and fleetSelectionOptions should use the same source
 const fleetTypes = [
-	[5,4,3,3,2],
-	[4,4,4,4,3,2,2],
-	[5,4,4,3,1],
+	[{s:5, n:'Carrier'},{s:4, n:'Carrier'},{s:3, n:'Destroyer'},{s:3, n:'Submarine'},{s:2,n:'Patrol'}],
+	[
+		{s:4, n:'Ship of the Line'},{s:4, n:'Ship of the Line'},{s:4, n:'Ship of the Line'},{s:4, n:'Ship of the Line'},
+		{s:3, n:'Corvette'},{s:2, n:'Privateer'},{s:2, n:'Privateer'},
+	],
+	[{s:5, n:'Carrier'},{s:4, n:'Warship'},{s:4, n:'Warship'},{s:3, n:'Frigate'},{s:1,n:'Missle Submarine'}],
 ]
 
 /**
  * Called when we want to start the game after we've made all of the required selections
  * sets up the game board with the ships added
  */
-function setupGameBoard() {
-	const selectedFleet = fleetTypes[parseInt(window.game.settings.fleet)]
+function setupGameBoard(randomBoards = []) {
+	const selectedFleet = fleetTypes[parseInt(window.game.settings.fleet)].map(({s}) => s);
 	const MAX_PLACEMENT_ATTEMPTS = 20;
 
 	const buildBoard = function(boardNumber) {
@@ -41,8 +44,7 @@ function setupGameBoard() {
 		}
 	}
 
-	buildBoard(0);
-	buildBoard(1);
+	randomBoards.forEach((num) => buildBoard(num));
 	window.game.settings.playersTurn = 0;
 	window.game.settings.gameDone = false;
 	startTurn();
@@ -52,14 +54,16 @@ function setupGameBoard() {
 
 
 function placeShipOnBoard(boardNumber, placingShip) {
-	const BOARD_DIM = 10;
-	const rootPlacement = {x: Math.floor(Math.random() * BOARD_DIM), y: Math.floor(Math.random() * BOARD_DIM)};
+	const rootPlacement = {
+		x: Math.floor(Math.random() * utils.grid.BOARD_DIM),
+		y: Math.floor(Math.random() * utils.grid.BOARD_DIM)
+	};
 	const nextShipSpot = getShipPlacementFn(Math.floor(Math.random() * 4));
 	const newShipPlacement = [rootPlacement];
 	for (let i = 1; i < placingShip; i++) {
 		newShipPlacement.push(nextShipSpot(newShipPlacement[newShipPlacement.length - 1]))
 	}
-	if (!checkShipPlacementIsValid(boardNumber, BOARD_DIM, newShipPlacement)) {
+	if (!checkShipPlacementIsValid(boardNumber, utils.grid.BOARD_DIM, newShipPlacement)) {
 		throw new Error("Invalid ship placement, try again")
 	} else {
 		window.game.board[boardNumber] = window.game.board[boardNumber].concat(newShipPlacement);
@@ -78,6 +82,7 @@ function checkShipPlacementIsValid(boardNumber, boardDim, ship) {
 	return ship.reduce((acum,curr) => acum && isValidCoordinate(curr), true);
 }
 
+// TODO: Use the utils!
 function getShipPlacementFn(type) {
 	switch (type) {
 		case 0: return ({x,y}) => ({x, y: (y-1)})

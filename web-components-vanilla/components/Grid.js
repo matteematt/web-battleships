@@ -1,14 +1,9 @@
 const gridTemplate = document.createElement('template')
 
-const COLS = ['1','2','3','4','5','6','7','8','9','X']
-const ROWS = ['A','B','C','D','E','F','G','H','I','J']
-
-const grid = ROWS.map((r) => COLS.map((c) => `${r}${c}`)).flat()
-
 gridTemplate.innerHTML = `
 <style>
 .grid {
-	background-color: var(--section-colour);
+	background-color: var(--primary-colour-two);
 	border-radius: var(--section-radius);
 	aspect-ratio: 1/1;
 }
@@ -20,47 +15,27 @@ gridTemplate.innerHTML = `
 }
 .grid-container div {
 	padding: 18%;
-	background-color: blue;
+	background-color: var(--grid-colour-base);
 	aspect-ratio: 1/1;
 }
 .grid-container div:hover {
-	background-color: green;
+	background-color: var(--grid-colour-hover);
 }
 .grid-container div.miss {
 	visibility: hidden;
 }
 .grid-container div.hit {
-	background-color: red;
+	background-color: var(--colour-grid-hit);
 	color: red;
 }
 </style>
 <div class="grid">
 	<div class="grid-container">
-		${grid.map((x) => `<div>${x}</div>`).join('')}
+		${utils.grid.grid.map((x) => `<div>${x}</div>`).join('')}
 	</div>
 </div>
 `;
 
-/**
- * Example
- * @param H2
- * @return {x: 1, y: 8}
- */
-function gridRefToXY(gridRef) {
-	return {
-		x: COLS.indexOf(gridRef[1]),
-		y: ROWS.indexOf(gridRef[0]),
-	}
-}
-
-/**
- * Example
- * @param {x: 1, y: 8}
- * @return H2
- */
-function gridXYToRef(XY) {
-	return `${ROWS[XY.y]}${COLS[XY.x]}`
-}
 
 class Grid extends HTMLElement {
 	constructor() {
@@ -76,7 +51,7 @@ class Grid extends HTMLElement {
 		if (window.game.settings.gameDone) return;
 		const boardNum = parseInt(this.getAttribute('player'));
 		if (window.game.settings.playersTurn === boardNum) return;
-		const xy = gridRefToXY(gridElement.innerHTML);
+		const xy = utils.grid.gridRefToXY(gridElement.innerHTML);
 		let result = "MISS";
 		if (window.game.board[boardNum].some(({x,y}) => x === xy.x && y === xy.y)) {
 			window.game.board[boardNum] =

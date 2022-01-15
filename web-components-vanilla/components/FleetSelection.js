@@ -3,13 +3,13 @@ const fleetSelectionTemplate = document.createElement('template')
 const fleetSelectionOptions = [
 	{ type: 0, name: "Classic", ico: 'assets/Ship-02-256.png', desc: 'Carrier (5), Battleship (4), Destroyer (3), Submarine (3), Patrol (2)'},
 	{ type: 1, name: "Age of Sail", ico: 'assets/Sailor-Wheel-256.png', desc: '4 x Ship of the Line (4), Corvette (3), 2 x Privateer (2)'},
-	{ type: 1, name: "Modern", ico: 'assets/Ship-01-256.png', desc: 'Carrier (5), 2 x Warship (4), Frigate (3), Missle Submarine (1)'},
+	{ type: 2, name: "Modern", ico: 'assets/Ship-01-256.png', desc: 'Carrier (5), 2 x Warship (4), Frigate (3), Missle Submarine (1)'},
 ]
 
 fleetSelectionTemplate.innerHTML = `
 <style>
 .players {
-	background-color: var(--section-colour);
+	background-color: var(--primary-colour-two);
 	border-radius: var(--section-radius);
 	padding: 1rem;
 }
@@ -19,11 +19,11 @@ fleetSelectionTemplate.innerHTML = `
 	gap: 2rem;
 }
 .grid-item {
-	background-color: var(--item-colour);
+	background-color: var(--primary-colour-three);
 	border-radius: var(--section-radius);
 }
 .grid-item:hover {
-	background-color: var(--item-colour-hover);
+	background-color: var(--colour-hover);
 }
 .grid-item img {
 	object-fit: contain;
@@ -38,14 +38,14 @@ fleetSelectionTemplate.innerHTML = `
 	text-align: left;
 }
 .control-row img {
-	background-color: var(--item-colour);
+	background-color: var(--primary-colour-three);
 	object-fit: contain;
 	width: 3rem;
 	padding: 10px;
 	border-radius: var(--section-radius);
 }
 .control-row img:hover {
-	background-color: var(--item-colour-hover);
+	background-color: var(--colour-hover);
 }
 </style>
 <div class="players">
@@ -78,10 +78,11 @@ class FleetSelection extends HTMLElement {
 		)
 		const selectionVal = filtered.length ? filtered[0].type : fleetSelectionOptions[0].type;
 		window.game.settings['fleet'] = selectionVal;
-		document.querySelector('.game-states-container').style.transform = 'translateX(-67%)'
+		// FleetPlacement.js
+		setFleetPlacementFleetValue(selectionVal);
+		document.querySelector('.game-states-container').style.transform = 'translateX(-50.125%)'
 		document.querySelector('html').style['overflow-y'] = 'auto'
-		// game.js
-		setupGameBoard();
+		setTimeout(() => document.querySelector('html').style['overflow-y'] = 'auto', 1000);
 	}
 
 	connectedCallback() {
