@@ -53,9 +53,22 @@ fleetPlacementTemplate.innerHTML = `
 	background-color: var(--grid-colour-base);
 	aspect-ratio: 1/1;
 }
+/*
+Hover = mouse hover over
+Invalid = mouse hover over, invalid placement
+Set = click mouse but not confirmed
+locked = clicked submit and locked in
+*/
+.grid-container div[locked="true"] {
+	background-color: var(--colour-hover);
+}
 .grid-container div:hover,
-.grid-container div[hover="true"] {
+.grid-container div[hover="true"],
+.grid-container div[set="true"] {
 	background-color: var(--grid-colour-hover);
+}
+.grid-container div[invalid="true"] {
+	background-color: var(--colour-grid-hit);
 }
 img.form-control {
 	background-color: var(--primary-colour-three);
@@ -73,6 +86,7 @@ img.form-control:hover {
 	<div class="container">
 		<div class="menu">
 			<h3>Place Fleet</h3>
+			<p>Continue by placing all of the following ships:</p>
 			<div class="fleet-choice"> </div>
 			<hr>
 			<p>Randomly place your fleet</p>
@@ -82,6 +96,7 @@ img.form-control:hover {
 			<div class="placement-control-row">
 				<img src="assets/Command-Undo-256.png" class="form-control"/>
 				<img src="assets/Command-Redo-256.png" class="form-control"/>
+				<img src="assets/Check-256.png" class="form-control"/>
 			</div>
 			<div class="grid-container">
 				${utils.grid.grid.map((x) => `<div>${x}</div>`).join('')}
@@ -107,10 +122,12 @@ class FleetPlacement extends HTMLElement {
 		this.attachShadow({mode: 'open'})
 		this.shadowRoot.appendChild(fleetPlacementTemplate.content.cloneNode(true));
 
+		this.placedShips = {};
+
+		this.placingOrientation = utils.grid.directions.right;
 		this.placingShipSize = null;
 		this.placingShipAnchorSpot = null;
-		this.placedShips = {};
-		this.placingOrientation = utils.grid.directions.right;
+		this.placedShipNthValues = null;
 	}
 
 	setupFleetMenuOption() {
@@ -129,6 +146,11 @@ class FleetPlacement extends HTMLElement {
 				this.placingShipSize = parseInt(elem.getAttribute("size"));
 			})
 		});
+		this.placedShips = {};
+		this.placingShipSize = null;
+		this.placingShipAnchorSpot = null;
+		this.placedShipNthValues = null;
+		this.clearAllGridItemsAttributes(['hover','invalid','set','locked']);
 	}
 
 	backButtonCallback() {
@@ -147,33 +169,95 @@ class FleetPlacement extends HTMLElement {
 		this.shadowRoot.querySelector('.random-placement').addEventListener('click', () => {
 			document.querySelector('.game-states-container').style.transform = 'translateX(-75.225%)';
 			// game.js
-			setupGameBoard();
+			setupGameBoard([0,1]);
 		})
 	}
 
-	clearGridItemHover() {
-		this.placingShipAnchorSpot = null;
-		this.shadowRoot.querySelectorAll('.grid-container div').forEach((elem) => elem.clearAttribute("hover"))
+	submitShipPlacementChoice() {
+		if (this.placedShipNthValues) {
+			this.placedShips = this.placedShipNthValues.reduce((all,n) => {
+				const placeXY = utils.grid.gridNthValueToXY(n)
+				return {...all, [JSON.stringify(placeXY)]: true};
+			}, this.placedShips)
+			this.setNthGridValuesAttribute(this.placedShipNthValues, 'locked');
+			this.clearAllGridItemsAttributes(['set'])
+			this.placingShipSize = null;
+			this.placingShipAnchorSpot = null;
+			this.placedShipNthValues = null;
+			this.shadowRoot.querySelector('div.fleet-option[selected="true"]').remove();
+			// Check if we are now done!
+			if (this.shadowRoot.querySelectorAll('div.fleet-option').length === 0) {
+				const shipPlacements = Object.keys(this.placedShips).map((x) => JSON.parse(x))
+				window.game.board[0] = shipPlacements;
+				document.querySelector('.game-states-container').style.transform = 'translateX(-75.225%)';
+				// game.js
+				setupGameBoard([1]);
+			}
+		}
 	}
 
+	getPlacedValuesAndVadility(elem) {
+		const anchorXY = utils.grid.gridRefToXY(this.placingShipAnchorSpot);
+		const placedAt = Array(this.placingShipSize - 1).fill(0).reduce((acum, _) => {
+			const latest = acum[acum.length - 1];
+			return [...acum, utils.grid.directionFn[this.placingOrientation](latest)];
+		}, [anchorXY])
+		const isPlacementValid = placedAt.findIndex(({x,y}) =>
+			x < 0 || x >= utils.grid.BOARD_DIM || y < 0 || y >= utils.grid.BOARD_DIM
+			|| JSON.stringify({x,y}) in this.placedShips
+		) === -1;
+		return {placedAt, isPlacementValid}
+	}
+
+	setNthGridValuesAttribute(ns, attribute) {
+		ns.forEach((n) => {
+			this.shadowRoot.querySelector(`.grid-container div:nth-child(${n+1})`).setAttribute(attribute,'true')
+		})
+	}
+
+	// When we leave hovering, stop showing any of the hovering indications
+	clearAllGridItemsAttributes(attributes) {
+		this.placingShipAnchorSpot = null;
+		this.shadowRoot.querySelectorAll('.grid-container div').forEach((elem) =>
+			attributes.forEach((attribute) => elem.removeAttribute(attribute)))
+	}
+
+	// When a mouse hovers over an icon, show whether this would be valid or invalid
 	showGridItemHover(elem) {
 		this.placingShipAnchorSpot = elem.innerHTML;
 		if (this.placingShipAnchorSpot && this.placingShipSize) {
-			console.log(`Run overlay function, ${this.placingShipAnchorSpot}, ${this.placingShipSize}`)
-			const anchorXY = utils.grid.gridRefToXY(this.placingShipAnchorSpot);
-			const placedAt = Array(this.placingShipSize - 1).fill(0).reduce((acum, _) => {
-				const latest = acum[acum.length - 1];
-				return [...acum, utils.grid.directionFn[this.placingOrientation](latest)];
-			}, [anchorXY])
-			console.log(placedAt)
-			// TODO: Use findIndex to see if placedAt stays in bounds, or clashes with any placed ships
+			const {placedAt, isPlacementValid} = this.getPlacedValuesAndVadility(elem)
+			if (isPlacementValid) {
+				const placedAtNthVals = placedAt.map((xy) => utils.grid.gridXYToNthValue(xy))
+				this.setNthGridValuesAttribute(placedAtNthVals, 'hover');
+			} else {
+				const showNthVals = placedAt.filter(({x,y}) =>
+					x >= 0 && x < utils.grid.BOARD_DIM && y >= 0 && y < utils.grid.BOARD_DIM
+				).map((xy) => utils.grid.gridXYToNthValue(xy))
+				this.setNthGridValuesAttribute(showNthVals, 'invalid');
+			}
+		}
+	}
+
+	// When the mouse is clicked on an icon, if the placement is valid the store it temporary until the submit
+	// button is clicked
+	gridItemSelect(elem) {
+		if (this.placingShipAnchorSpot && this.placingShipSize) {
+			const {placedAt, isPlacementValid} = this.getPlacedValuesAndVadility(elem)
+			if (isPlacementValid) {
+				this.clearAllGridItemsAttributes(['set'])
+				const placedAtNthVals = placedAt.map((xy) => utils.grid.gridXYToNthValue(xy))
+				this.setNthGridValuesAttribute(placedAtNthVals, 'set');
+				this.placedShipNthValues = [...placedAtNthVals];
+			}
 		}
 	}
 
 	placementGridItemCallback() {
 		this.shadowRoot.querySelectorAll('.grid-container div').forEach((elem) => {
 			elem.addEventListener('mouseenter',() => this.showGridItemHover(elem))
-			elem.addEventListener('mouseleave',() => this.clearGridItemHover)
+			elem.addEventListener('mouseleave',() => this.clearAllGridItemsAttributes(['hover','invalid']))
+			elem.addEventListener('click',() => this.gridItemSelect(elem))
 		})
 	}
 
@@ -189,6 +273,9 @@ class FleetPlacement extends HTMLElement {
 		.addEventListener('click', () => {
 			this.placingOrientation = this.placingOrientation < 3 ? this.placingOrientation + 1 : utils.grid.directions.up
 		})
+		this.shadowRoot.querySelector('div.placement-control-row img.form-control:nth-child(3)')
+			.addEventListener('click', () => this.submitShipPlacementChoice())
+
 	}
 
 	attributeChangedCallback(name, oldValue, newValue) {

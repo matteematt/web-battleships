@@ -25,7 +25,7 @@ gridTemplate.innerHTML = `
 	visibility: hidden;
 }
 .grid-container div.hit {
-	background-color: red;
+	background-color: var(--colour-grid-hit);
 	color: red;
 }
 </style>

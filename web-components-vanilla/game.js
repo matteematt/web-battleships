@@ -16,7 +16,7 @@ const fleetTypes = [
  * Called when we want to start the game after we've made all of the required selections
  * sets up the game board with the ships added
  */
-function setupGameBoard() {
+function setupGameBoard(randomBoards = []) {
 	const selectedFleet = fleetTypes[parseInt(window.game.settings.fleet)].map(({s}) => s);
 	const MAX_PLACEMENT_ATTEMPTS = 20;
 
@@ -44,8 +44,7 @@ function setupGameBoard() {
 		}
 	}
 
-	buildBoard(0);
-	buildBoard(1);
+	randomBoards.forEach((num) => buildBoard(num));
 	window.game.settings.playersTurn = 0;
 	window.game.settings.gameDone = false;
 	startTurn();
@@ -83,6 +82,7 @@ function checkShipPlacementIsValid(boardNumber, boardDim, ship) {
 	return ship.reduce((acum,curr) => acum && isValidCoordinate(curr), true);
 }
 
+// TODO: Use the utils!
 function getShipPlacementFn(type) {
 	switch (type) {
 		case 0: return ({x,y}) => ({x, y: (y-1)})
