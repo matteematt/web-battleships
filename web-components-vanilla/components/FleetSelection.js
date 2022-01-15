@@ -87,7 +87,7 @@ class FleetSelection extends HTMLElement {
 
 	connectedCallback() {
 		this.shadowRoot.querySelector('.control-row img').addEventListener('click',
-			() => document.querySelector('.game-states-container').style.transform = 'translateX(0%)'
+			() => utils.container.transition({to: 'prev'})
 		)
 		this.shadowRoot.querySelectorAll('.grid-item').forEach((elem) =>
 			elem.addEventListener('click', () => this.makeFleetSelection(elem))
