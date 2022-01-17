@@ -56,13 +56,26 @@ function buildUtils() {
 	const buildContainerFn = () => {
 		const getContainer = () => document.querySelector('.game-states-container');
 		const containerContentLength = () => getContainer().children.length;
+		const SCROLL_FORCE_TIME = 500;
 		const transition = (options) => {
-			// Let us add options for things like vertical scrolling, or scroll back up
-			const { to } = options;
+			// to : next to next screen (prev) to previous
+			// scroll : lock to lock vertical scrolling, (unlock) to unlock it
+			const { to, scroll } = options;
 			const currState = parseInt(getContainer().getAttribute('state')) || 0;
 			const nextState = currState + (to === 'next' ? 1 : -1);
 			getContainer().style.transform = `translateX(-${(100 / containerContentLength()) * nextState}%)`
 			getContainer().setAttribute('state',nextState);
+			if (scroll === 'lock') {
+				document.querySelector('html').style['overflow-y'] = 'hidden';
+				window.scrollTo({ top: 0, behavior: 'smooth' });
+				setTimeout(() => {
+					window.scrollTo({ top: 0 });
+					document.querySelector('html').style['overflow-y'] = 'hidden';
+				}, SCROLL_FORCE_TIME);
+			} else {
+				document.querySelector('html').style['overflow-y'] = 'auto';
+				setTimeout(() => document.querySelector('html').style['overflow-y'] = 'auto', SCROLL_FORCE_TIME);
+			}
 		};
 		return {
 			transition,

@@ -156,18 +156,13 @@ class FleetPlacement extends HTMLElement {
 	backButtonCallback() {
 		// TODO: Should really make this back button its own component in a real app
 		this.shadowRoot.querySelector('.control-row img').addEventListener('click', () => {
-			document.querySelector('.game-states-container').style.transform = 'translateX(-25.05%)';
-			window.scrollTo({ top: 0, behavior: 'smooth' });
-			setTimeout(() => {
-				window.scrollTo({ top: 0 });
-				document.querySelector('html').style['overflow-y'] = 'hidden';
-			}, 1000);
+			utils.container.transition({to: 'prev', scroll: 'lock'});
 		})
 	}
 
 	randomFleetButtonCallback() {
 		this.shadowRoot.querySelector('.random-placement').addEventListener('click', () => {
-			document.querySelector('.game-states-container').style.transform = 'translateX(-75.225%)';
+			utils.container.transition({to: 'next', scroll: 'unlock'});
 			// game.js
 			setupGameBoard([0,1]);
 		})
@@ -189,7 +184,7 @@ class FleetPlacement extends HTMLElement {
 			if (this.shadowRoot.querySelectorAll('div.fleet-option').length === 0) {
 				const shipPlacements = Object.keys(this.placedShips).map((x) => JSON.parse(x))
 				window.game.board[0] = shipPlacements;
-				document.querySelector('.game-states-container').style.transform = 'translateX(-75.225%)';
+				utils.container.transition({to: 'next', scroll: 'unlock'});
 				// game.js
 				setupGameBoard([1]);
 			}

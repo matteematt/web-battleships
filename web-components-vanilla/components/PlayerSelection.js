@@ -61,7 +61,7 @@ class PlayerSelection extends HTMLElement {
 		)
 		const selectionVal = filtered.length ? filtered[0].type : playerSelectionOptions[0].type;
 		window.game.settings['vs'] = selectionVal;
-		utils.container.transition({to: 'next'});
+		utils.container.transition({to: 'next', scroll: 'lock'});
 	}
 
 	connectedCallback() {
