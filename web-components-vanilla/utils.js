@@ -56,6 +56,7 @@ function buildUtils() {
 	const buildContainerFn = () => {
 		const getContainer = () => document.querySelector('.game-states-container');
 		const containerContentLength = () => getContainer().children.length;
+		const updateContainerLength = () => getContainer().style.setProperty('--contains', `${containerContentLength()}`);
 		const SCROLL_FORCE_TIME = 500;
 		const transition = (options) => {
 			// to : next to next screen (prev) to previous
@@ -77,8 +78,27 @@ function buildUtils() {
 				setTimeout(() => document.querySelector('html').style['overflow-y'] = 'auto', SCROLL_FORCE_TIME);
 			}
 		};
+		// Assumes the item we're adding is after the menu we are currently on
+		const addMenu = (afterSelector, element) => {
+			const afterElement = document.querySelector(afterSelector);
+			if (afterElement === null) throw new Error("Unable to find element in DOM to insert menu after")
+			afterElement.after(element);
+			updateContainerLength();
+		}
+		// Assumes the item we're removing is after the menu we are currently on
+		const removeMenu = (selector) => {
+			const element = document.querySelector(selector);
+			if (element === null) {
+				console.log(`WARN: Unable to find element to delete ${selector}`)
+			} else {
+				element.remove();
+			}
+			updateContainerLength();
+		}
 		return {
 			transition,
+			addMenu,
+			removeMenu,
 		}
 	}
 	return {

@@ -84,9 +84,10 @@ class FleetSelection extends HTMLElement {
 	}
 
 	connectedCallback() {
-		this.shadowRoot.querySelector('.control-row img').addEventListener('click',
-			() => utils.container.transition({to: 'prev', scroll: 'lock'})
-		)
+		this.shadowRoot.querySelector('.control-row img').addEventListener('click', () => {
+			utils.container.removeMenu('.place-fleet-2');
+			utils.container.transition({to: 'prev', scroll: 'lock'});
+		})
 		this.shadowRoot.querySelectorAll('.grid-item').forEach((elem) =>
 			elem.addEventListener('click', () => this.makeFleetSelection(elem))
 		)
