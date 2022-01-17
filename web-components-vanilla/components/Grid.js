@@ -68,7 +68,7 @@ class Grid extends HTMLElement {
 		} attacks ${gridElement.innerHTML} - ${result}!`]);
 		window.game.settings.playersTurn = window.game.settings.playersTurn === 0 ? 1 : 0;
 		// game.js
-		startTurn();
+		game.startTurn();
 	}
 
 	connectedCallback() {
