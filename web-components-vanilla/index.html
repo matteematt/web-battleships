@@ -15,8 +15,9 @@
 		// Init game state object
 		window.game = {
 			settings: {},
-			board: [[],[]],
-			messages: [],
+			board: [[],[]], // contains just the xy of the ship locations
+			ships: [[],[]], // contains the xy's, the name, and the size
+			messages: [[],[]],
 			cpu: {
 				hits: [],
 				guesses: [],
