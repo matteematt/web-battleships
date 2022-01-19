@@ -68,7 +68,7 @@ function Game() {
 			x: Math.floor(Math.random() * utils.grid.BOARD_DIM),
 			y: Math.floor(Math.random() * utils.grid.BOARD_DIM)
 		};
-		const nextShipSpot = getShipPlacementFn(Math.floor(Math.random() * 4));
+		const nextShipSpot = utils.grid.directionFn[Math.floor(Math.random() * 4)];
 		const newShipPlacement = [rootPlacement];
 		for (let i = 1; i < placingShip; i++) {
 			newShipPlacement.push(nextShipSpot(newShipPlacement[newShipPlacement.length - 1]))
@@ -133,13 +133,3 @@ function Game() {
 }
 
 const game = Game();
-
-// TODO: Use the utils!
-function getShipPlacementFn(type) {
-	switch (type) {
-		case 0: return ({x,y}) => ({x, y: (y-1)})
-		case 1: return ({x,y}) => ({x: (x+1), y})
-		case 2: return ({x,y}) => ({x, y: (y+1)})
-		case 3: return ({x,y}) => ({x: (x-1), y})
-	}
-}
