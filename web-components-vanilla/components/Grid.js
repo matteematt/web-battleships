@@ -10,7 +10,7 @@ gridTemplate.innerHTML = `
 .grid-container {
 	display: grid;
 	grid-template-columns: repeat(10, 1fr);
-	gap: 1rem;
+	gap: var(--grid-gap);
 	padding: 11px;
 }
 .grid-container div {
@@ -22,11 +22,16 @@ gridTemplate.innerHTML = `
 	background-color: var(--grid-colour-hover);
 }
 .grid-container div.miss {
-	visibility: hidden;
+	background-color: var(--grid-colour-miss);
+	color: var(--grid-colour-miss);
 }
 .grid-container div.hit {
 	background-color: var(--colour-grid-hit);
-	color: red;
+	color: var(--colour-grid-hit);
+}
+.grid-container div.sink {
+	background-color: var(--colour-grid-sink);
+	color: var(--colour-grid-sink);
 }
 </style>
 <div class="grid">

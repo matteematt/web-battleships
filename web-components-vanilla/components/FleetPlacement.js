@@ -45,7 +45,7 @@ fleetPlacementTemplate.innerHTML = `
 .grid-container {
 	display: grid;
 	grid-template-columns: repeat(10, 1fr);
-	gap: 1rem;
+	gap: var(--grid-gap);
 	padding: 11px;
 }
 .grid-container div {
