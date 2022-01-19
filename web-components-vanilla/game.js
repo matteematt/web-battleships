@@ -56,8 +56,6 @@ function Game() {
 	 * sets up the game board with the ships added
 	 */
 	const init = () => {
-		console.log(this.playerOneSet)
-		console.log(this.playerTwoSet)
 		if (!this.playerOneSet || !this.playerTwoSet) throw new Error("Init game before we've set the players boards")
 		window.game.settings.playersTurn = 0;
 		window.game.settings.gameDone = false;

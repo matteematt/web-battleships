@@ -196,12 +196,12 @@ class FleetPlacement extends HTMLElement {
 			// Check if we are now done!
 			if (this.shadowRoot.querySelectorAll('div.fleet-option').length === 0) {
 				const shipPlacements = Object.keys(this.placedShips).map((x) => JSON.parse(x))
-				if (window.game.settings.vs > 1) {
+				if (window.game.settings.vs > 0) {
 					game.setPlayersBoard(0, shipPlacements);
 					game.randomBoard(1);
 					game.init();
 				} else if (this.getAttribute('player') == "0") {
-					game.setPlayersBoard(0);
+					game.setPlayersBoard(0, shipPlacements);
 				} else {
 					game.setPlayersBoard(1, shipPlacements);
 					game.init();
