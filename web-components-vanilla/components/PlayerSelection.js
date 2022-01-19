@@ -34,6 +34,11 @@ playerSelectionTemplate.innerHTML = `
 .grid-item h3 {
 	font-size: 2rem;
 }
+@media only screen and (orientation: portrait) {
+	.grid {
+		grid-template-columns: 1fr 1fr;
+	}
+}
 </style>
 <div class="players">
 	<h2>Choose VS</h2>

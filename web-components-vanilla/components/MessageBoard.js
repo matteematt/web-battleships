@@ -14,6 +14,11 @@ messageBoardTemplate.innerHTML = `
 }
 .message-board li {
 	font-size: ${MESSAGES_FONT_SIZE}rem;
+	list-style-type: none;
+}
+.message-board li:first-child {
+	font-weight: bolder;
+	margin-bottom: 1rem;
 }
 </style>
 <div class="message-board">
