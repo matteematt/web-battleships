@@ -28,7 +28,7 @@ fleetSelectionTemplate.innerHTML = `
 .grid-item img {
 	object-fit: contain;
 	width: 50%;
-	height: 55%;
+	height: 40%;
 }
 .grid-item h3 {
 	font-size: 2rem;
@@ -46,6 +46,12 @@ fleetSelectionTemplate.innerHTML = `
 }
 .control-row img:hover {
 	background-color: var(--colour-hover);
+}
+@media only screen and (orientation: portrait) {
+	.grid-item img {
+		width: 40%;
+		height: 20%;
+	}
 }
 </style>
 <div class="players">

@@ -80,6 +80,17 @@ img.form-control {
 img.form-control:hover {
 	background-color: var(--colour-hover);
 }
+button {
+	margin: 15px;
+}
+@media only screen and (orientation: portrait) {
+	.container {
+		grid-template-columns: 1fr;
+	}
+	.fleet-choice {
+		grid-template-columns: 1fr 1fr 1fr;
+	}
+}
 </style>
 <div class="section">
 	<h2>Place Fleet</h2>

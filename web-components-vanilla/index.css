@@ -36,3 +36,8 @@ h1 {
 	grid-gap: 2rem;
 }
 
+@media only screen and (orientation: portrait) {
+	.state-grid {
+		grid-template-columns: 1fr;
+	}
+}
