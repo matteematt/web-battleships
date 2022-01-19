@@ -80,15 +80,14 @@ class FleetSelection extends HTMLElement {
 		window.game.settings['fleet'] = selectionVal;
 		// FleetPlacement.js
 		setFleetPlacementFleetValue(selectionVal);
-		document.querySelector('.game-states-container').style.transform = 'translateX(-50.125%)'
-		document.querySelector('html').style['overflow-y'] = 'auto'
-		setTimeout(() => document.querySelector('html').style['overflow-y'] = 'auto', 1000);
+		utils.container.transition({to: 'next', scroll: 'unlock'});
 	}
 
 	connectedCallback() {
-		this.shadowRoot.querySelector('.control-row img').addEventListener('click',
-			() => document.querySelector('.game-states-container').style.transform = 'translateX(0%)'
-		)
+		this.shadowRoot.querySelector('.control-row img').addEventListener('click', () => {
+			utils.container.removeMenu('.place-fleet-2');
+			utils.container.transition({to: 'prev', scroll: 'lock'});
+		})
 		this.shadowRoot.querySelectorAll('.grid-item').forEach((elem) =>
 			elem.addEventListener('click', () => this.makeFleetSelection(elem))
 		)

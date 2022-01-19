@@ -61,7 +61,14 @@ class PlayerSelection extends HTMLElement {
 		)
 		const selectionVal = filtered.length ? filtered[0].type : playerSelectionOptions[0].type;
 		window.game.settings['vs'] = selectionVal;
-		document.querySelector('.game-states-container').style.transform = 'translateX(-25.05%)'
+		if (selectionVal === 0) {
+			// Need to add menu for two players
+			const newMenuItem = document.createElement('div');
+			newMenuItem.classList = 'place-fleet-2';
+			newMenuItem.innerHTML = "<fleet-placement player='1'></fleet-placement>"
+			utils.container.addMenu('.place-fleet', newMenuItem);
+		}
+		utils.container.transition({to: 'next', scroll: 'lock'});
 	}
 
 	connectedCallback() {

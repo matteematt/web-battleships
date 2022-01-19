@@ -139,7 +139,7 @@ function aiRandomSearch() {
 			x: Math.floor(Math.random() * utils.grid.BOARD_DIM),
 			y: Math.floor(Math.random() * utils.grid.BOARD_DIM)
 		}
-		if (!game.cpu.guesses.some(({x,y}) => x === guess.x && y === guess.y)) {
+		if (!window.game.cpu.guesses.some(({x,y}) => x === guess.x && y === guess.y)) {
 			gotValidGuess = true
 		}
 	}

@@ -110,7 +110,12 @@ img.form-control:hover {
 `;
 
 function setFleetPlacementFleetValue(fleetNumber) {
-	document.querySelector('fleet-placement').setAttribute('fleetnumber',window.game.settings.fleet);
+	[
+		document.querySelector('.place-fleet > fleet-placement:nth-child(1)'),
+		document.querySelector('.place-fleet-2 > fleet-placement:nth-child(1)'),
+	]
+		.filter((elem) => elem !== null)
+		.map((elem) => elem.setAttribute('fleetnumber',window.game.settings.fleet))
 }
 
 // TODO: Should really only use one component just for the grid
@@ -131,7 +136,7 @@ class FleetPlacement extends HTMLElement {
 	}
 
 	setupFleetMenuOption() {
-		const fleetOptions = fleetTypes[window.game.settings.fleet]
+		const fleetOptions = game.fleetTypes[window.game.settings.fleet]
 			.reduce((html,{s,n}) =>
 			`${html}<div class="fleet-option" size="${s}">
 				<h4>${n}</h4>
@@ -156,20 +161,23 @@ class FleetPlacement extends HTMLElement {
 	backButtonCallback() {
 		// TODO: Should really make this back button its own component in a real app
 		this.shadowRoot.querySelector('.control-row img').addEventListener('click', () => {
-			document.querySelector('.game-states-container').style.transform = 'translateX(-25.05%)';
-			window.scrollTo({ top: 0, behavior: 'smooth' });
-			setTimeout(() => {
-				window.scrollTo({ top: 0 });
-				document.querySelector('html').style['overflow-y'] = 'hidden';
-			}, 1000);
+			utils.container.transition({to: 'prev', scroll: 'lock'});
 		})
 	}
 
 	randomFleetButtonCallback() {
 		this.shadowRoot.querySelector('.random-placement').addEventListener('click', () => {
-			document.querySelector('.game-states-container').style.transform = 'translateX(-75.225%)';
-			// game.js
-			setupGameBoard([0,1]);
+			utils.container.transition({to: 'next', scroll: 'unlock'});
+			if (window.game.settings.vs > 0) {
+				game.randomBoard(0);
+				game.randomBoard(1);
+				game.init();
+			} else if (this.getAttribute('player') == "0") {
+				game.randomBoard(0);
+			} else {
+				game.randomBoard(1);
+				game.init();
+			}
 		})
 	}
 
@@ -188,10 +196,17 @@ class FleetPlacement extends HTMLElement {
 			// Check if we are now done!
 			if (this.shadowRoot.querySelectorAll('div.fleet-option').length === 0) {
 				const shipPlacements = Object.keys(this.placedShips).map((x) => JSON.parse(x))
-				window.game.board[0] = shipPlacements;
-				document.querySelector('.game-states-container').style.transform = 'translateX(-75.225%)';
-				// game.js
-				setupGameBoard([1]);
+				if (window.game.settings.vs > 0) {
+					game.setPlayersBoard(0, shipPlacements);
+					game.randomBoard(1);
+					game.init();
+				} else if (this.getAttribute('player') == "0") {
+					game.setPlayersBoard(0, shipPlacements);
+				} else {
+					game.setPlayersBoard(1, shipPlacements);
+					game.init();
+				}
+				utils.container.transition({to: 'next', scroll: 'unlock'});
 			}
 		}
 	}

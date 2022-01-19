@@ -1,5 +1,5 @@
 function buildUtils() {
-	const buildGrid = () => {
+	const buildGridFn = () => {
 		const COLS = ['1','2','3','4','5','6','7','8','9','X'];
 		const ROWS = ['A','B','C','D','E','F','G','H','I','J'];
 		const BOARD_DIM = 10;
@@ -53,8 +53,57 @@ function buildUtils() {
 			}),
 		}
 	};
+	const buildContainerFn = () => {
+		const getContainer = () => document.querySelector('.game-states-container');
+		const containerContentLength = () => getContainer().children.length;
+		const updateContainerLength = () => getContainer().style.setProperty('--contains', `${containerContentLength()}`);
+		const SCROLL_FORCE_TIME = 500;
+		const transition = (options) => {
+			// to : next to next screen (prev) to previous
+			// scroll : lock to lock vertical scrolling, (unlock) to unlock it
+			const { to, scroll } = options;
+			const currState = parseInt(getContainer().getAttribute('state')) || 0;
+			const nextState = currState + (to === 'next' ? 1 : -1);
+			getContainer().style.transform = `translateX(-${(100 / containerContentLength()) * nextState}%)`
+			getContainer().setAttribute('state',nextState);
+			if (scroll === 'lock') {
+				document.querySelector('html').style['overflow-y'] = 'hidden';
+				window.scrollTo({ top: 0, behavior: 'smooth' });
+				setTimeout(() => {
+					window.scrollTo({ top: 0 });
+					document.querySelector('html').style['overflow-y'] = 'hidden';
+				}, SCROLL_FORCE_TIME);
+			} else {
+				document.querySelector('html').style['overflow-y'] = 'auto';
+				setTimeout(() => document.querySelector('html').style['overflow-y'] = 'auto', SCROLL_FORCE_TIME);
+			}
+		};
+		// Assumes the item we're adding is after the menu we are currently on
+		const addMenu = (afterSelector, element) => {
+			const afterElement = document.querySelector(afterSelector);
+			if (afterElement === null) throw new Error("Unable to find element in DOM to insert menu after")
+			afterElement.after(element);
+			updateContainerLength();
+		}
+		// Assumes the item we're removing is after the menu we are currently on
+		const removeMenu = (selector) => {
+			const element = document.querySelector(selector);
+			if (element === null) {
+				console.log(`WARN: Unable to find element to delete ${selector}`)
+			} else {
+				element.remove();
+			}
+			updateContainerLength();
+		}
+		return {
+			transition,
+			addMenu,
+			removeMenu,
+		}
+	}
 	return {
-		grid: buildGrid(),
+		grid: buildGridFn(),
+		container: buildContainerFn(),
 	}
 }
 
