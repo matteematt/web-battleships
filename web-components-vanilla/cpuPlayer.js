@@ -3,18 +3,20 @@
  */
 function startCPUPlayerTurn() {
 	// console.log(`Ai on mode ${window.game.cpu.mode}`)
-	const THINKING_TIME = 2000;
+	const THINKING_TIME_SCALE = 500;
+	const THINKING_TIME_OFFSET = 1000;
+	const thinkingTime = () => Math.random() * THINKING_TIME_SCALE + THINKING_TIME_OFFSET;
 	switch (window.game.settings.vs) {
 		case 0:
 			throw new Error("Shouldn't start CPU turn for two players");
 		case 1:
-			setTimeout(() => aiEasyCPU(), Math.random() * THINKING_TIME);
+			setTimeout(() => aiEasyCPU(), thinkingTime());
 			break;
 		case 2:
-			setTimeout(() => aiMedCPU(), Math.random() * THINKING_TIME);
+			setTimeout(() => aiMedCPU(), thinkingTime());
 			break;
 		case 3:
-			setTimeout(() => aiHardCPU(), Math.random() * THINKING_TIME);
+			setTimeout(() => aiHardCPU(), thinkingTime());
 			break;
 		default:
 			throw new Error(`Unknown settings.vs value "${window.game.settings.vs}"`);

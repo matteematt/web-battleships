@@ -161,6 +161,7 @@ class FleetPlacement extends HTMLElement {
 				fleetChoiceElems.forEach((e) => e.removeAttribute('selected'));
 				elem.setAttribute('selected','true');
 				this.placingShipSize = parseInt(elem.getAttribute("size"));
+				utils.sfx.play(utils.sfx.FX.CLICK_BIG);
 			})
 		});
 		this.placedCoordinates = {};
@@ -174,12 +175,14 @@ class FleetPlacement extends HTMLElement {
 	backButtonCallback() {
 		// TODO: Should really make this back button its own component in a real app
 		this.shadowRoot.querySelector('.control-row img').addEventListener('click', () => {
+			utils.sfx.play(utils.sfx.FX.CLICK_SMALL);
 			utils.container.transition({to: 'prev', scroll: 'lock'});
 		})
 	}
 
 	randomFleetButtonCallback() {
 		this.shadowRoot.querySelector('.random-placement').addEventListener('click', () => {
+			utils.sfx.play(utils.sfx.FX.CLICK_SMALL);
 			utils.container.transition({to: 'next', scroll: 'unlock'});
 			if (window.game.settings.vs > 0) {
 				game.randomBoard(0);
@@ -293,6 +296,7 @@ class FleetPlacement extends HTMLElement {
 			elem.addEventListener('mouseenter',() => this.showGridItemHover(elem))
 			elem.addEventListener('mouseleave',() => this.clearAllGridItemsAttributes(['hover','invalid']))
 			elem.addEventListener('click',() => this.gridItemSelect(elem))
+			elem.addEventListener('click', () => utils.sfx.play(utils.sfx.FX.CLICK_BIG))
 		})
 	}
 
@@ -300,6 +304,9 @@ class FleetPlacement extends HTMLElement {
 		this.backButtonCallback();
 		this.randomFleetButtonCallback();
 		this.placementGridItemCallback();
+		this.shadowRoot.querySelectorAll('div.placement-control-row img.form-control').forEach((elem) =>
+			elem.addEventListener('click', () => utils.sfx.play(utils.sfx.FX.CLICK_SMALL))
+		)
 		this.shadowRoot.querySelector('div.placement-control-row img.form-control:nth-child(1)')
 		.addEventListener('click', () => {
 			this.placingOrientation = this.placingOrientation > 0 ? this.placingOrientation - 1 : utils.grid.directions.left

@@ -50,6 +50,7 @@ class Grid extends HTMLElement {
 		// Need to save the reference to the functions used as callbacks so we
 		// can de-register the callback if we've already clicked it
 		this.gridCallbacks = {};
+		this.sfxTimeTimout = 500;
 	}
 
 	appendNthGridValuesClassName(ns, className) {
@@ -73,10 +74,12 @@ class Grid extends HTMLElement {
 			this.appendNthGridValuesClassName(locNVals, 'sink');
 			window.game.ships[boardNum]	= window.game.ships[boardNum].filter(({loc}) =>
 				!loc.some(({x,y}) => x === xy.x && y === xy.y))
+			setTimeout(() => utils.sfx.play(utils.sfx.FX.SINK), this.sfxTimeTimout);
 		}
 	}
 
 	clickGridValue(gridElement) {
+		utils.sfx.play(utils.sfx.FX.SHOOT);
 		if (window.game.settings.gameDone) return;
 		const boardNum = parseInt(this.getAttribute('player'));
 		if (window.game.settings.playersTurn === boardNum) return;
@@ -89,9 +92,11 @@ class Grid extends HTMLElement {
 			result = "HIT";
 			gridElement.removeEventListener('click', this.gridCallbacks[gridElement.innerHTML]);
 			delete this.gridCallbacks[gridElement.innerHTML]
+			setTimeout(() => utils.sfx.play(utils.sfx.FX.HIT), this.sfxTimeTimout);
 			this.performGridHit(boardNum, xy);
 		} else {
 			gridElement.classList.add('miss')
+			setTimeout(() => utils.sfx.play(utils.sfx.FX.SPLASH), this.sfxTimeTimout);
 		}
 		addMessageToMessageBoard([`Player ${
 			window.game.settings.playersTurn === 0 ? "one" : "two"
