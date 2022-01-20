@@ -104,6 +104,7 @@ function buildUtils() {
 		}
 	}
 	const buildSoundFXFn = () => {
+		let playAudio = false;
 		const FX = {
 			SHOOT: 'assets/sfx/shoot.mp3',
 			HIT: 'assets/sfx/hit.mp3',
@@ -114,13 +115,19 @@ function buildUtils() {
 			CLICK_BIG: 'assets/sfx/click_big.mp3',
 		}
 		const play = (fx) => {
+			if (!playAudio) return;
 			if (!Object.keys(FX).map((k) => FX[k]).includes(fx)) throw new Error(`Invalid sfx "${fx}"`)
 			let audio = new Audio(fx);
 			audio.play();
 		}
+		const toggleAudio = () => {
+			playAudio = !playAudio;
+			return playAudio;
+		}
 		return {
 			FX,
 			play,
+			toggleAudio,
 		}
 	}
 	return {
