@@ -93,10 +93,12 @@ class FleetSelection extends HTMLElement {
 		this.shadowRoot.querySelector('.control-row img').addEventListener('click', () => {
 			utils.container.removeMenu('.place-fleet-2');
 			utils.container.transition({to: 'prev', scroll: 'lock'});
+			utils.sfx.play(utils.sfx.FX.CLICK_SMALL);
 		})
-		this.shadowRoot.querySelectorAll('.grid-item').forEach((elem) =>
+		this.shadowRoot.querySelectorAll('.grid-item').forEach((elem) => {
 			elem.addEventListener('click', () => this.makeFleetSelection(elem))
-		)
+			elem.addEventListener('click', () => utils.sfx.play(utils.sfx.FX.CLICK_SMALL));
+		})
 	}
 }
 

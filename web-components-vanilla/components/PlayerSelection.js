@@ -77,9 +77,10 @@ class PlayerSelection extends HTMLElement {
 	}
 
 	connectedCallback() {
-		this.shadowRoot.querySelectorAll('.grid-item').forEach((item) =>
-			item.addEventListener('click', () => this.makeVsSelection(item))
-		)
+		this.shadowRoot.querySelectorAll('.grid-item').forEach((item) => {
+			item.addEventListener('click', () => this.makeVsSelection(item));
+			item.addEventListener('click', () => utils.sfx.play(utils.sfx.FX.CLICK_SMALL));
+		})
 	}
 }
 
