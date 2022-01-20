@@ -17,3 +17,9 @@ assets/sfx/hit.mp3
 assets/sfx/shoot.mp3
 assets/sfx/sink.mp3
 assets/sfx/splash.mp3
+
+## https://www.zapsplat.com/sound-effect-categories/
+
+assets/sfx/click_big.mp3
+assets/sfx/click_small.mp3
+

@@ -110,6 +110,8 @@ function buildUtils() {
 			END: 'assets/sfx/ended.mp3',
 			SINK: 'assets/sfx/sink.mp3',
 			SPLASH: 'assets/sfx/splash.mp3',
+			CLICK_SMALL: 'assets/sfx/click_small.mp3',
+			CLICK_BIG: 'assets/sfx/click_big.mp3',
 		}
 		const play = (fx) => {
 			if (!Object.keys(FX).map((k) => FX[k]).includes(fx)) throw new Error(`Invalid sfx "${fx}"`)
