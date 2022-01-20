@@ -63,13 +63,12 @@ class Grid extends HTMLElement {
 			loc.some(({x,y}) => x === xy.x && y === xy.y))[0];
 		if (!attackedShip) throw new Error("Unable to find attacked ship");
 		attackedShip.health -= 1;
-		console.log({attackedShip})
 		if (attackedShip.health < 1) {
 			addMessageToMessageBoard([`Player ${
 				window.game.settings.playersTurn === 0 ? "one" : "two"
 			} has sank player ${
 				window.game.settings.playersTurn === 0 ? "two" : "one"
-			}'s ${attackedShip.type}!`]);
+			}'s "${attackedShip.type}"!`]);
 			const locNVals = attackedShip.loc.map((xy) => utils.grid.gridXYToNthValue(xy))
 			this.appendNthGridValuesClassName(locNVals, 'sink');
 			window.game.ships[boardNum]	= window.game.ships[boardNum].filter(({loc}) =>
