@@ -45,7 +45,7 @@ fleetPlacementTemplate.innerHTML = `
 .grid-container {
 	display: grid;
 	grid-template-columns: repeat(10, 1fr);
-	gap: 1rem;
+	gap: var(--grid-gap);
 	padding: 11px;
 }
 .grid-container div {
@@ -138,7 +138,8 @@ class FleetPlacement extends HTMLElement {
 		this.attachShadow({mode: 'open'})
 		this.shadowRoot.appendChild(fleetPlacementTemplate.content.cloneNode(true));
 
-		this.placedShips = {};
+		this.placedCoordinates = {};
+		this.placedShips = [];
 
 		this.placingOrientation = utils.grid.directions.right;
 		this.placingShipSize = null;
@@ -149,7 +150,7 @@ class FleetPlacement extends HTMLElement {
 	setupFleetMenuOption() {
 		const fleetOptions = game.fleetTypes[window.game.settings.fleet]
 			.reduce((html,{s,n}) =>
-			`${html}<div class="fleet-option" size="${s}">
+			`${html}<div class="fleet-option" size="${s}" type="${n}">
 				<h4>${n}</h4>
 				<p>Size: ${s}</p>
 			</div> `,"")
@@ -162,7 +163,8 @@ class FleetPlacement extends HTMLElement {
 				this.placingShipSize = parseInt(elem.getAttribute("size"));
 			})
 		});
-		this.placedShips = {};
+		this.placedCoordinates = {};
+		this.placedShips = [];
 		this.placingShipSize = null;
 		this.placingShipAnchorSpot = null;
 		this.placedShipNthValues = null;
@@ -194,10 +196,10 @@ class FleetPlacement extends HTMLElement {
 
 	submitShipPlacementChoice() {
 		if (this.placedShipNthValues) {
-			this.placedShips = this.placedShipNthValues.reduce((all,n) => {
+			this.placedCoordinates = this.placedShipNthValues.reduce((all,n) => {
 				const placeXY = utils.grid.gridNthValueToXY(n)
 				return {...all, [JSON.stringify(placeXY)]: true};
-			}, this.placedShips)
+			}, this.placedCoordinates)
 			this.setNthGridValuesAttribute(this.placedShipNthValues, 'locked');
 			this.clearAllGridItemsAttributes(['set'])
 			this.placingShipSize = null;
@@ -206,15 +208,15 @@ class FleetPlacement extends HTMLElement {
 			this.shadowRoot.querySelector('div.fleet-option[selected="true"]').remove();
 			// Check if we are now done!
 			if (this.shadowRoot.querySelectorAll('div.fleet-option').length === 0) {
-				const shipPlacements = Object.keys(this.placedShips).map((x) => JSON.parse(x))
+				const shipCoords = Object.keys(this.placedCoordinates).map((x) => JSON.parse(x))
 				if (window.game.settings.vs > 0) {
-					game.setPlayersBoard(0, shipPlacements);
+					game.setPlayersBoard(0, shipCoords, this.placedShips);
 					game.randomBoard(1);
 					game.init();
 				} else if (this.getAttribute('player') == "0") {
-					game.setPlayersBoard(0, shipPlacements);
+					game.setPlayersBoard(0, shipCoords, this.placedShips);
 				} else {
-					game.setPlayersBoard(1, shipPlacements);
+					game.setPlayersBoard(1, shipCoords, this.placedShips);
 					game.init();
 				}
 				utils.container.transition({to: 'next', scroll: 'unlock'});
@@ -230,7 +232,7 @@ class FleetPlacement extends HTMLElement {
 		}, [anchorXY])
 		const isPlacementValid = placedAt.findIndex(({x,y}) =>
 			x < 0 || x >= utils.grid.BOARD_DIM || y < 0 || y >= utils.grid.BOARD_DIM
-			|| JSON.stringify({x,y}) in this.placedShips
+			|| JSON.stringify({x,y}) in this.placedCoordinates
 		) === -1;
 		return {placedAt, isPlacementValid}
 	}
@@ -271,6 +273,13 @@ class FleetPlacement extends HTMLElement {
 		if (this.placingShipAnchorSpot && this.placingShipSize) {
 			const {placedAt, isPlacementValid} = this.getPlacedValuesAndVadility(elem)
 			if (isPlacementValid) {
+				const placingShip = this.shadowRoot.querySelector('.fleet-option[selected="true"]');
+				const ship = {
+					loc: placedAt,
+					health: parseInt(placingShip.getAttribute('size')),
+					type: placingShip.getAttribute('type'),
+				}
+				this.placedShips.push(ship);
 				this.clearAllGridItemsAttributes(['set'])
 				const placedAtNthVals = placedAt.map((xy) => utils.grid.gridXYToNthValue(xy))
 				this.setNthGridValuesAttribute(placedAtNthVals, 'set');

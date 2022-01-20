@@ -4,8 +4,11 @@ html {
 	--primary-colour-three: #191917;
 	--colour-hover: #0e3313;
 	--colour-grid-hit: #751111;
+	--colour-grid-sink: #420303;
 	--grid-colour-base: #2c2cf2;
 	--grid-colour-hover: #36b036;
+	--grid-colour-miss: #131365;
+	--grid-gap: 0.2rem;
 	--section-radius: 6px;
 	text-align: center;
 	background-color: var(--primary-colour-one);

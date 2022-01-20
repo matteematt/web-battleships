@@ -13,12 +13,13 @@ function Game() {
 	]
 
 	const buildBoard = (boardNumber) => {
-		const selectedFleet = fleetTypes[parseInt(window.game.settings.fleet)].map(({s}) => s);
+		const selectedFleet = fleetTypes[parseInt(window.game.settings.fleet)]
 		const MAX_PLACEMENT_ATTEMPTS = 20;
 		let boardDone = false;
 		while (!boardDone) {
 			// TODO: Should really only set this at the end rather than reset on failure
 			window.game.board[boardNumber] = []
+			window.game.ships[boardNumber] = []
 			let placementAttempts = 0;
 			let workingSelectedFleet = [...selectedFleet];
 			let placingShip = workingSelectedFleet.shift();
@@ -42,8 +43,9 @@ function Game() {
 		}
 	}
 
-	const setPlayersBoard = (player, placements) => {
+	const setPlayersBoard = (player, placements, ships) => {
 		window.game.board[player] = placements;
+		window.game.ships[player] = ships;
 		if (player === 0) {
 			this.playerOneSet = true;
 		} else {
@@ -64,19 +66,26 @@ function Game() {
 	}
 
 	const placeShipOnBoard = (boardNumber, placingShip) => {
+		const {s: shipSize, n: shipType } = placingShip;
 		const rootPlacement = {
 			x: Math.floor(Math.random() * utils.grid.BOARD_DIM),
 			y: Math.floor(Math.random() * utils.grid.BOARD_DIM)
 		};
 		const nextShipSpot = utils.grid.directionFn[Math.floor(Math.random() * 4)];
 		const newShipPlacement = [rootPlacement];
-		for (let i = 1; i < placingShip; i++) {
+		for (let i = 1; i < shipSize; i++) {
 			newShipPlacement.push(nextShipSpot(newShipPlacement[newShipPlacement.length - 1]))
 		}
 		if (!checkShipPlacementIsValid(boardNumber, utils.grid.BOARD_DIM, newShipPlacement)) {
 			throw new Error("Invalid ship placement, try again")
 		} else {
 			window.game.board[boardNumber] = window.game.board[boardNumber].concat(newShipPlacement);
+			const ship = {
+				loc: newShipPlacement,
+				health: shipSize,
+				type: shipType,
+			}
+			window.game.ships[boardNumber].push(ship)
 		}
 	}
 
