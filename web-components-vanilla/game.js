@@ -43,8 +43,9 @@ function Game() {
 		}
 	}
 
-	const setPlayersBoard = (player, placements) => {
+	const setPlayersBoard = (player, placements, ships) => {
 		window.game.board[player] = placements;
+		window.game.ships[player] = ships;
 		if (player === 0) {
 			this.playerOneSet = true;
 		} else {
@@ -81,12 +82,10 @@ function Game() {
 			window.game.board[boardNumber] = window.game.board[boardNumber].concat(newShipPlacement);
 			const ship = {
 				loc: newShipPlacement,
-				size: shipSize,
+				health: shipSize,
 				type: shipType,
 			}
-			console.log({ship})
-			// TODO: Issue
-			// window.game.ships[boardNumber] = window.game.ships[boardNumber].append(ship)
+			window.game.ships[boardNumber].push(ship)
 		}
 	}
 

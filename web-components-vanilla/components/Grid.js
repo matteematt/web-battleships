@@ -52,6 +52,31 @@ class Grid extends HTMLElement {
 		this.gridCallbacks = {};
 	}
 
+	appendNthGridValuesClassName(ns, className) {
+		ns.forEach((n) => {
+			this.shadowRoot.querySelector(`.grid-container div:nth-child(${n+1})`).classList.add(className);
+		})
+	}
+
+	performGridHit(boardNum, xy) {
+		const attackedShip = window.game.ships[boardNum].filter(({loc}) =>
+			loc.some(({x,y}) => x === xy.x && y === xy.y))[0];
+		if (!attackedShip) throw new Error("Unable to find attacked ship");
+		attackedShip.health -= 1;
+		console.log({attackedShip})
+		if (attackedShip.health < 1) {
+			addMessageToMessageBoard([`Player ${
+				window.game.settings.playersTurn === 0 ? "one" : "two"
+			} has sank player ${
+				window.game.settings.playersTurn === 0 ? "two" : "one"
+			}'s ${attackedShip.type}!`]);
+			const locNVals = attackedShip.loc.map((xy) => utils.grid.gridXYToNthValue(xy))
+			this.appendNthGridValuesClassName(locNVals, 'sink');
+			window.game.ships[boardNum]	= window.game.ships[boardNum].filter(({loc}) =>
+				!loc.some(({x,y}) => x === xy.x && y === xy.y))
+		}
+	}
+
 	clickGridValue(gridElement) {
 		if (window.game.settings.gameDone) return;
 		const boardNum = parseInt(this.getAttribute('player'));
@@ -65,6 +90,7 @@ class Grid extends HTMLElement {
 			result = "HIT";
 			gridElement.removeEventListener('click', this.gridCallbacks[gridElement.innerHTML]);
 			delete this.gridCallbacks[gridElement.innerHTML]
+			this.performGridHit(boardNum, xy);
 		} else {
 			gridElement.classList.add('miss')
 		}
