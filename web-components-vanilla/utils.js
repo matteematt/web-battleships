@@ -103,9 +103,28 @@ function buildUtils() {
 			removeMenu,
 		}
 	}
+	const buildSoundFXFn = () => {
+		const FX = {
+			SHOOT: 'assets/sfx/shoot.mp3',
+			HIT: 'assets/sfx/hit.mp3',
+			END: 'assets/sfx/ended.mp3',
+			SINK: 'assets/sfx/sink.mp3',
+			SPLASH: 'assets/sfx/splash.mp3',
+		}
+		const play = (fx) => {
+			if (!Object.keys(FX).map((k) => FX[k]).includes(fx)) throw new Error(`Invalid sfx "${fx}"`)
+			let audio = new Audio(fx);
+			audio.play();
+		}
+		return {
+			FX,
+			play,
+		}
+	}
 	return {
 		grid: buildGridFn(),
 		container: buildContainerFn(),
+		sfx: buildSoundFXFn(),
 	}
 }
 
