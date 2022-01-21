@@ -1,32 +1,10 @@
 const gridSquareTemplate = document.createElement('template')
 
-
-// gridSquareTemplate.innerHTML = `
-// <style>
-// div.grid-base {
-	// padding: 18%;
-	// background-color: var(--grid-colour-base);
-	// aspect-ratio: 1/1;
-// }
-// div.grid-base.gone {
-	// padding: 18%;
-	// background-color: var(--grid-colour-base);
-	// aspect-ratio: 1/1;
-// }
-// div.grid-base:hover {
-	// background-color: var(--grid-colour-hover);
-// }
-// </style>
-// <div>
-	// <div class="grid-base"><div>
-// </div>
-// `;
-
 gridSquareTemplate.innerHTML = `
 <style>
 div.container {
-	width: var(--grid-size);
-	height: var(--grid-size);
+	width: var(--grid-item-size);
+	aspect-ratio: 1/1;
 	perspective: 1000px;
 	position: relative;
 }
@@ -46,7 +24,6 @@ div.base {
 	width: 100%;
 	height: 100%;
 	aspect-ratio: 1/1;
-	/* padding: 18%; */
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
 }
@@ -57,11 +34,8 @@ div.back {
 	background-color: var(--colour-hover);
 	transform: rotateY(180deg);
 }
-p {
-	 /* margin: 5%; */
-}
-
 </style>
+
 <div>
 	<div class="container">
 		<div class="inner">

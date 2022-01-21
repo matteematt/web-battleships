@@ -9,7 +9,7 @@ html {
 	--grid-colour-hover: #36b036;
 	--grid-colour-miss: #131365;
 	--grid-gap: 0.2rem;
-	--grid-size: 4.2vw;
+	--grid-item-size: 100%;
 	--section-radius: 6px;
 	text-align: center;
 	background-color: var(--primary-colour-one);
@@ -41,9 +41,6 @@ h1 {
 }
 
 @media only screen and (orientation: portrait) {
-	html {
-		--grid-size: 9vw;
-	}
 	.state-grid {
 		grid-template-columns: 1fr;
 	}
