@@ -88,7 +88,7 @@ button {
 				<img src="assets/Check-256.png" class="form-control"/>
 			</div>
 			<div class="grid-container">
-				${utils.grid.grid.map((x) => `<grid-square name="${x}"></grid-square>`).join('')}
+				${utils().grid.grid.map((x) => `<grid-square name="${x}"></grid-square>`).join('')}
 			</div>
 		</div>
 	</div>
@@ -119,7 +119,7 @@ class FleetPlacement extends HTMLElement {
 		this.placedCoordinates = {};
 		this.placedShips = [];
 
-		this.placingOrientation = utils.grid.directions.right;
+		this.placingOrientation = utils().grid.directions.right;
 		this.placingShipSize = null;
 		this.placingShipAnchorSpot = null;
 		this.placedShipNthValues = null;
@@ -139,7 +139,7 @@ class FleetPlacement extends HTMLElement {
 				fleetChoiceElems.forEach((e) => e.removeAttribute('selected'));
 				elem.setAttribute('selected','true');
 				this.placingShipSize = parseInt(elem.getAttribute("size"));
-				utils.sfx.play(utils.sfx.FX.CLICK_BIG);
+				utils().sfx.play(utils().sfx.FX.CLICK_BIG);
 			})
 		});
 		this.placedCoordinates = {};
@@ -157,17 +157,17 @@ class FleetPlacement extends HTMLElement {
 	backButtonCallback() {
 		// TODO: Should really make this back button its own component in a real app
 		this.shadowRoot.querySelector('.control-row img').addEventListener('click', () => {
-			utils.sfx.play(utils.sfx.FX.CLICK_SMALL);
+			utils().sfx.play(utils().sfx.FX.CLICK_SMALL);
 			this.setupFleetMenuOption();
 			const scroll = this.getAttribute('player') == "0" ? 'lock' : 'unlock';
-			utils.container.transition({to: 'prev', scroll});
+			utils().container.transition({to: 'prev', scroll});
 		})
 	}
 
 	randomFleetButtonCallback() {
 		this.shadowRoot.querySelector('.random-placement').addEventListener('click', () => {
-			utils.sfx.play(utils.sfx.FX.CLICK_SMALL);
-			utils.container.transition({to: 'next', scroll: 'unlock'});
+			utils().sfx.play(utils().sfx.FX.CLICK_SMALL);
+			utils().container.transition({to: 'next', scroll: 'unlock'});
 			if (window.game.settings.vs > 0) {
 				game.randomBoard(0);
 				game.randomBoard(1);
@@ -184,7 +184,7 @@ class FleetPlacement extends HTMLElement {
 	submitShipPlacementChoice() {
 		if (this.placedShipNthValues) {
 			this.placedCoordinates = this.placedShipNthValues.reduce((all,n) => {
-				const placeXY = utils.grid.gridNthValueToXY(n)
+				const placeXY = utils().grid.gridNthValueToXY(n)
 				return {...all, [JSON.stringify(placeXY)]: true};
 			}, this.placedCoordinates)
 			this.setNthGridItemsAttributeValue(this.placedShipNthValues, 'status','selected');
@@ -206,19 +206,19 @@ class FleetPlacement extends HTMLElement {
 					game.setPlayersBoard(1, shipCoords, this.placedShips);
 					game.init();
 				}
-				utils.container.transition({to: 'next', scroll: 'unlock'});
+				utils().container.transition({to: 'next', scroll: 'unlock'});
 			}
 		}
 	}
 
 	getPlacedValuesAndVadility(elem) {
-		const anchorXY = utils.grid.gridRefToXY(this.placingShipAnchorSpot);
+		const anchorXY = utils().grid.gridRefToXY(this.placingShipAnchorSpot);
 		const placedAt = Array(this.placingShipSize - 1).fill(0).reduce((acum, _) => {
 			const latest = acum[acum.length - 1];
-			return [...acum, utils.grid.directionFn[this.placingOrientation](latest)];
+			return [...acum, utils().grid.directionFn[this.placingOrientation](latest)];
 		}, [anchorXY])
 		const isPlacementValid = placedAt.findIndex(({x,y}) =>
-			x < 0 || x >= utils.grid.BOARD_DIM || y < 0 || y >= utils.grid.BOARD_DIM
+			x < 0 || x >= utils().grid.BOARD_DIM || y < 0 || y >= utils().grid.BOARD_DIM
 			|| JSON.stringify({x,y}) in this.placedCoordinates
 		) === -1;
 		return {placedAt, isPlacementValid}
@@ -246,12 +246,12 @@ class FleetPlacement extends HTMLElement {
 		if (this.placingShipAnchorSpot && this.placingShipSize) {
 			const {placedAt, isPlacementValid} = this.getPlacedValuesAndVadility(elem)
 			if (isPlacementValid) {
-				const placedAtNthVals = placedAt.map((xy) => utils.grid.gridXYToNthValue(xy))
+				const placedAtNthVals = placedAt.map((xy) => utils().grid.gridXYToNthValue(xy))
 				this.setNthGridItemsAttributeValue(placedAtNthVals, 'front','hover');
 			} else {
 				const showNthVals = placedAt.filter(({x,y}) =>
-					x >= 0 && x < utils.grid.BOARD_DIM && y >= 0 && y < utils.grid.BOARD_DIM
-				).map((xy) => utils.grid.gridXYToNthValue(xy))
+					x >= 0 && x < utils().grid.BOARD_DIM && y >= 0 && y < utils().grid.BOARD_DIM
+				).map((xy) => utils().grid.gridXYToNthValue(xy))
 				this.setNthGridItemsAttributeValue(showNthVals, 'front','sink');
 			}
 		}
@@ -271,7 +271,7 @@ class FleetPlacement extends HTMLElement {
 				}
 				this.placedShips.push(ship);
 				this.clearAllGridItemsFrontVals(['miss'])
-				const placedAtNthVals = placedAt.map((xy) => utils.grid.gridXYToNthValue(xy))
+				const placedAtNthVals = placedAt.map((xy) => utils().grid.gridXYToNthValue(xy))
 				this.setNthGridItemsAttributeValue(placedAtNthVals, 'front','miss');
 				this.placedShipNthValues = [...placedAtNthVals];
 			}
@@ -283,7 +283,7 @@ class FleetPlacement extends HTMLElement {
 			elem.addEventListener('mouseenter',() => this.showGridItemHover(elem))
 			elem.addEventListener('mouseleave',() => this.clearAllGridItemsFrontVals(['hover','sink']))
 			elem.addEventListener('click',() => this.gridItemSelect(elem))
-			elem.addEventListener('click', () => utils.sfx.play(utils.sfx.FX.CLICK_BIG))
+			elem.addEventListener('click', () => utils().sfx.play(utils().sfx.FX.CLICK_BIG))
 		})
 	}
 
@@ -292,15 +292,15 @@ class FleetPlacement extends HTMLElement {
 		this.randomFleetButtonCallback();
 		this.placementGridItemCallback();
 		this.shadowRoot.querySelectorAll('div.placement-control-row img.form-control').forEach((elem) =>
-			elem.addEventListener('click', () => utils.sfx.play(utils.sfx.FX.CLICK_SMALL))
+			elem.addEventListener('click', () => utils().sfx.play(utils().sfx.FX.CLICK_SMALL))
 		)
 		this.shadowRoot.querySelector('div.placement-control-row img.form-control:nth-child(1)')
 		.addEventListener('click', () => {
-			this.placingOrientation = this.placingOrientation > 0 ? this.placingOrientation - 1 : utils.grid.directions.left
+			this.placingOrientation = this.placingOrientation > 0 ? this.placingOrientation - 1 : utils().grid.directions.left
 		})
 		this.shadowRoot.querySelector('div.placement-control-row img.form-control:nth-child(2)')
 		.addEventListener('click', () => {
-			this.placingOrientation = this.placingOrientation < 3 ? this.placingOrientation + 1 : utils.grid.directions.up
+			this.placingOrientation = this.placingOrientation < 3 ? this.placingOrientation + 1 : utils().grid.directions.up
 		})
 		this.shadowRoot.querySelector('div.placement-control-row img.form-control:nth-child(3)')
 			.addEventListener('click', () => this.submitShipPlacementChoice())

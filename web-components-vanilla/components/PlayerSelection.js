@@ -71,15 +71,15 @@ class PlayerSelection extends HTMLElement {
 			const newMenuItem = document.createElement('div');
 			newMenuItem.classList = 'place-fleet-2';
 			newMenuItem.innerHTML = "<fleet-placement player='1'></fleet-placement>"
-			utils.container.addMenu('.place-fleet', newMenuItem);
+			utils().container.addMenu('.place-fleet', newMenuItem);
 		}
-		utils.container.transition({to: 'next', scroll: 'lock'});
+		utils().container.transition({to: 'next', scroll: 'lock'});
 	}
 
 	connectedCallback() {
 		this.shadowRoot.querySelectorAll('.grid-item').forEach((item) => {
 			item.addEventListener('click', () => this.makeVsSelection(item));
-			item.addEventListener('click', () => utils.sfx.play(utils.sfx.FX.CLICK_SMALL));
+			item.addEventListener('click', () => utils().sfx.play(utils().sfx.FX.CLICK_SMALL));
 		})
 	}
 }

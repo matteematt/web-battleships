@@ -22,7 +22,7 @@ gridTemplate.innerHTML = `
 </style>
 <div class="grid">
 	<div class="grid-container">
-		${utils.grid.grid.map((x) => `<grid-square name="${x}"></grid-square>`).join('')}
+		${utils().grid.grid.map((x) => `<grid-square name="${x}"></grid-square>`).join('')}
 	</div>
 </div>
 `;
@@ -56,20 +56,20 @@ class Grid extends HTMLElement {
 			} has sank player ${
 				window.game.settings.playersTurn === 0 ? "two" : "one"
 			}'s "${attackedShip.type}"!`]);
-			const locNVals = attackedShip.loc.map((xy) => utils.grid.gridXYToNthValue(xy))
+			const locNVals = attackedShip.loc.map((xy) => utils().grid.gridXYToNthValue(xy))
 			this.setNthGridValuesStatus(locNVals, 'status', 'sink');
 			window.game.ships[boardNum]	= window.game.ships[boardNum].filter(({loc}) =>
 				!loc.some(({x,y}) => x === xy.x && y === xy.y))
-			setTimeout(() => utils.sfx.play(utils.sfx.FX.SINK), this.sfxTimeTimout);
+			setTimeout(() => utils().sfx.play(utils().sfx.FX.SINK), this.sfxTimeTimout);
 		}
 	}
 
 	clickGridValue(gridElement) {
 		if (window.game.settings.gameDone) return;
-		utils.sfx.play(utils.sfx.FX.SHOOT);
+		utils().sfx.play(utils().sfx.FX.SHOOT);
 		const boardNum = parseInt(this.getAttribute('player'));
 		if (window.game.settings.playersTurn === boardNum) return;
-		const xy = utils.grid.gridRefToXY(gridElement.getAttribute('name'));
+		const xy = utils().grid.gridRefToXY(gridElement.getAttribute('name'));
 		let result = "MISS";
 		if (window.game.board[boardNum].some(({x,y}) => x === xy.x && y === xy.y)) {
 			window.game.board[boardNum] =
@@ -79,12 +79,12 @@ class Grid extends HTMLElement {
 			result = "HIT";
 			gridElement.removeEventListener('click', this.gridCallbacks[gridElement.innerHTML]);
 			delete this.gridCallbacks[gridElement.innerHTML]
-			setTimeout(() => utils.sfx.play(utils.sfx.FX.HIT), this.sfxTimeTimout);
+			setTimeout(() => utils().sfx.play(utils().sfx.FX.HIT), this.sfxTimeTimout);
 			this.performGridHit(boardNum, xy);
 		} else {
 			// gridElement.classList.add('miss')
 			gridElement.setAttribute('status','miss')
-			setTimeout(() => utils.sfx.play(utils.sfx.FX.SPLASH), this.sfxTimeTimout);
+			setTimeout(() => utils().sfx.play(utils().sfx.FX.SPLASH), this.sfxTimeTimout);
 		}
 		addMessageToMessageBoard([`Player ${
 			window.game.settings.playersTurn === 0 ? "one" : "two"

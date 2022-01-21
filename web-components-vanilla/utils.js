@@ -137,4 +137,4 @@ function buildUtils() {
 	}
 }
 
-const utils = buildUtils();
+const utils = buildUtils;
