@@ -123,7 +123,7 @@ function aiMakeGuess(guess) {
 	}
 	window.game.cpu.guesses.push(guess)
 	const guessAsGridRef = utils.grid.gridXYToRef(guess);
-	console.log(`Making AI guess ${guessAsGridRef}`)
+	// console.log(`Making AI guess ${guessAsGridRef}`)
 	const guessedTile = Array.from(getPlayersTilesNodeList())
 		.filter((elem) => elem.getAttribute('name') === guessAsGridRef)[0];
 	const successGuess = window.game.board[0].some(({x,y}) => x === guess.x && y === guess.y)

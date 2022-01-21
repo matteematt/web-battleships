@@ -62,7 +62,7 @@ function Game() {
 		window.game.settings.playersTurn = 0;
 		window.game.settings.gameDone = false;
 		startTurn();
-		console.log(window.game)
+		// console.log(window.game)
 	}
 
 	const placeShipOnBoard = (boardNumber, placingShip) => {
