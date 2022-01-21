@@ -19,40 +19,6 @@ gridTemplate.innerHTML = `
 	aspect-ratio: 1/1;
 	transform-style: preserve-3d;
 }
-.grid-container div:hover {
-	background-color: var(--grid-colour-hover);
-}
-.grid-container div.miss {
-	background-color: var(--grid-colour-miss);
-	color: var(--grid-colour-miss);
-}
-.grid-container div.hit {
-	background-color: var(--colour-grid-hit);
-	color: var(--colour-grid-hit);
-	animation-name: grid-item-hit;
-	animation-duration: 4s;
-	animation-iteration-count: 1;
-}
-.grid-container div.sink {
-	background-color: var(--colour-grid-sink);
-	color: var(--colour-grid-sink);
-}
-@keyframes grid-item-hit {
-	0% {
-		transform: scaleY(1);
-		background-color: var(--grid-colour-base);
-	}
-	50% {
-		transform: scaleY(0);
-		color: var(--colour-grid-hit);
-		background-color: var(--colour-grid-hit);
-	}
-	0% {
-		transform: scaleY(-1);
-		color: var(--colour-grid-hit);
-		background-color: var(--colour-grid-hit);
-	}
-}
 </style>
 <div class="grid">
 	<div class="grid-container">
@@ -75,7 +41,7 @@ class Grid extends HTMLElement {
 
 	setNthGridValuesStatus(ns, attribute, className) {
 		ns.forEach((n) => {
-			this.shadowRoot.querySelector(`.grid-container div:nth-child(${n+1})`).setAttribute(attribute,'sink')
+			this.shadowRoot.querySelector(`grid-square:nth-child(${n+1})`).setAttribute(attribute,'sink')
 		})
 	}
 
@@ -103,7 +69,7 @@ class Grid extends HTMLElement {
 		if (window.game.settings.gameDone) return;
 		const boardNum = parseInt(this.getAttribute('player'));
 		if (window.game.settings.playersTurn === boardNum) return;
-		const xy = utils.grid.gridRefToXY(gridElement.innerHTML);
+		const xy = utils.grid.gridRefToXY(gridElement.getAttribute('name'));
 		let result = "MISS";
 		if (window.game.board[boardNum].some(({x,y}) => x === xy.x && y === xy.y)) {
 			window.game.board[boardNum] =

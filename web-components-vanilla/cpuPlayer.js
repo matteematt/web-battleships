@@ -30,7 +30,7 @@ function startCPUPlayerTurn() {
 function getPlayersTilesNodeList() {
 	return document
 		.querySelector('battleship-grid[player="0"]')
-		.shadowRoot.querySelectorAll(".grid-container div");
+		.shadowRoot.querySelectorAll("grid-square");
 }
 
 // CONSTANTS
@@ -124,7 +124,8 @@ function aiMakeGuess(guess) {
 	window.game.cpu.guesses.push(guess)
 	const guessAsGridRef = utils.grid.gridXYToRef(guess);
 	console.log(`Making AI guess ${guessAsGridRef}`)
-	const guessedTile = Array.from(getPlayersTilesNodeList()).filter((elem) => elem.innerHTML === guessAsGridRef)[0];
+	const guessedTile = Array.from(getPlayersTilesNodeList())
+		.filter((elem) => elem.getAttribute('name') === guessAsGridRef)[0];
 	const successGuess = window.game.board[0].some(({x,y}) => x === guess.x && y === guess.y)
 	if (successGuess) window.game.cpu.hits.push(guess);
 	guessedTile.click();
