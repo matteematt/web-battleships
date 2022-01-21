@@ -48,28 +48,6 @@ fleetPlacementTemplate.innerHTML = `
 	gap: var(--grid-gap);
 	padding: 11px;
 }
-.grid-container div {
-	padding: 18%;
-	background-color: var(--grid-colour-base);
-	aspect-ratio: 1/1;
-}
-/*
-Hover = mouse hover over
-Invalid = mouse hover over, invalid placement
-Set = click mouse but not confirmed
-locked = clicked submit and locked in
-*/
-.grid-container div[locked="true"] {
-	background-color: var(--colour-hover);
-}
-.grid-container div:hover,
-.grid-container div[hover="true"],
-.grid-container div[set="true"] {
-	background-color: var(--grid-colour-hover);
-}
-.grid-container div[invalid="true"] {
-	background-color: var(--colour-grid-hit);
-}
 img.form-control {
 	background-color: var(--primary-colour-three);
 	object-fit: contain;
@@ -110,7 +88,7 @@ button {
 				<img src="assets/Check-256.png" class="form-control"/>
 			</div>
 			<div class="grid-container">
-				${utils.grid.grid.map((x) => `<div>${x}</div>`).join('')}
+				${utils.grid.grid.map((x) => `<grid-square name="${x}"></grid-square>`).join('')}
 			</div>
 		</div>
 	</div>
@@ -169,14 +147,20 @@ class FleetPlacement extends HTMLElement {
 		this.placingShipSize = null;
 		this.placingShipAnchorSpot = null;
 		this.placedShipNthValues = null;
-		this.clearAllGridItemsAttributes(['hover','invalid','set','locked']);
+		this.clearAllGridItemsFrontVals(['hover','sink','miss']);
+		this.shadowRoot.querySelectorAll('grid-square').forEach((elem) => {
+			elem.shadowRoot.querySelector('div.container').classList.remove('flipped');
+			elem.shadowRoot.querySelector('div.back').classList = "back base";
+		})
 	}
 
 	backButtonCallback() {
 		// TODO: Should really make this back button its own component in a real app
 		this.shadowRoot.querySelector('.control-row img').addEventListener('click', () => {
 			utils.sfx.play(utils.sfx.FX.CLICK_SMALL);
-			utils.container.transition({to: 'prev', scroll: 'lock'});
+			this.setupFleetMenuOption();
+			const scroll = this.getAttribute('player') == "0" ? 'lock' : 'unlock';
+			utils.container.transition({to: 'prev', scroll});
 		})
 	}
 
@@ -203,8 +187,8 @@ class FleetPlacement extends HTMLElement {
 				const placeXY = utils.grid.gridNthValueToXY(n)
 				return {...all, [JSON.stringify(placeXY)]: true};
 			}, this.placedCoordinates)
-			this.setNthGridValuesAttribute(this.placedShipNthValues, 'locked');
-			this.clearAllGridItemsAttributes(['set'])
+			this.setNthGridItemsAttributeValue(this.placedShipNthValues, 'status','selected');
+			this.clearAllGridItemsFrontVals(['set'])
 			this.placingShipSize = null;
 			this.placingShipAnchorSpot = null;
 			this.placedShipNthValues = null;
@@ -240,32 +224,35 @@ class FleetPlacement extends HTMLElement {
 		return {placedAt, isPlacementValid}
 	}
 
-	setNthGridValuesAttribute(ns, attribute) {
+	setNthGridItemsAttributeValue(ns, attribute, value) {
 		ns.forEach((n) => {
-			this.shadowRoot.querySelector(`.grid-container div:nth-child(${n+1})`).setAttribute(attribute,'true')
+			this.shadowRoot.querySelector(`grid-square:nth-child(${n+1})`).setAttribute(attribute,value)
 		})
 	}
 
+
 	// When we leave hovering, stop showing any of the hovering indications
-	clearAllGridItemsAttributes(attributes) {
+	clearAllGridItemsFrontVals(attributes) {
 		this.placingShipAnchorSpot = null;
-		this.shadowRoot.querySelectorAll('.grid-container div').forEach((elem) =>
-			attributes.forEach((attribute) => elem.removeAttribute(attribute)))
+		this.shadowRoot.querySelectorAll('grid-square').forEach((elem) => {
+			const elemFront = elem.shadowRoot.querySelector('div.front');
+			attributes.forEach((attribute) => elemFront.classList.remove(attribute));
+		})
 	}
 
 	// When a mouse hovers over an icon, show whether this would be valid or invalid
 	showGridItemHover(elem) {
-		this.placingShipAnchorSpot = elem.innerHTML;
+		this.placingShipAnchorSpot = elem.getAttribute('name');
 		if (this.placingShipAnchorSpot && this.placingShipSize) {
 			const {placedAt, isPlacementValid} = this.getPlacedValuesAndVadility(elem)
 			if (isPlacementValid) {
 				const placedAtNthVals = placedAt.map((xy) => utils.grid.gridXYToNthValue(xy))
-				this.setNthGridValuesAttribute(placedAtNthVals, 'hover');
+				this.setNthGridItemsAttributeValue(placedAtNthVals, 'front','hover');
 			} else {
 				const showNthVals = placedAt.filter(({x,y}) =>
 					x >= 0 && x < utils.grid.BOARD_DIM && y >= 0 && y < utils.grid.BOARD_DIM
 				).map((xy) => utils.grid.gridXYToNthValue(xy))
-				this.setNthGridValuesAttribute(showNthVals, 'invalid');
+				this.setNthGridItemsAttributeValue(showNthVals, 'front','sink');
 			}
 		}
 	}
@@ -283,18 +270,18 @@ class FleetPlacement extends HTMLElement {
 					type: placingShip.getAttribute('type'),
 				}
 				this.placedShips.push(ship);
-				this.clearAllGridItemsAttributes(['set'])
+				this.clearAllGridItemsFrontVals(['miss'])
 				const placedAtNthVals = placedAt.map((xy) => utils.grid.gridXYToNthValue(xy))
-				this.setNthGridValuesAttribute(placedAtNthVals, 'set');
+				this.setNthGridItemsAttributeValue(placedAtNthVals, 'front','miss');
 				this.placedShipNthValues = [...placedAtNthVals];
 			}
 		}
 	}
 
 	placementGridItemCallback() {
-		this.shadowRoot.querySelectorAll('.grid-container div').forEach((elem) => {
+		this.shadowRoot.querySelectorAll('grid-square').forEach((elem) => {
 			elem.addEventListener('mouseenter',() => this.showGridItemHover(elem))
-			elem.addEventListener('mouseleave',() => this.clearAllGridItemsAttributes(['hover','invalid']))
+			elem.addEventListener('mouseleave',() => this.clearAllGridItemsFrontVals(['hover','sink']))
 			elem.addEventListener('click',() => this.gridItemSelect(elem))
 			elem.addEventListener('click', () => utils.sfx.play(utils.sfx.FX.CLICK_BIG))
 		})

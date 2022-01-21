@@ -65,7 +65,7 @@ function buildUtils() {
 			const currState = parseInt(getContainer().getAttribute('state')) || 0;
 			const nextState = currState + (to === 'next' ? 1 : -1);
 			getContainer().style.transform = `translateX(-${
-				((100 / containerContentLength()) * nextState) + (currState / 5)
+				((100 / containerContentLength()) * nextState) + (currState / 10)
 			}%)`
 			getContainer().setAttribute('state',nextState);
 			if (scroll === 'lock') {

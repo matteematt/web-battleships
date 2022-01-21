@@ -41,6 +41,14 @@ div.miss {
 	background-color: var(--grid-colour-miss);
 	color: var(--grid-colour-miss);
 }
+div.selected {
+	background-color: var(--colour-hover);
+	color: var(--colour-hover);
+}
+div.hover {
+	background-color: var(--grid-colour-hover);
+	color: var(--grid-colour-hover);
+}
 div.hit {
 	background-color: var(--colour-grid-hit);
 	color: var(--colour-grid-hit);
@@ -48,10 +56,6 @@ div.hit {
 div.sink {
 	background-color: var(--colour-grid-sink);
 	color: var(--colour-grid-sink);
-}
-div.selected {
-	background-color: var(--colour-hover);
-	color: var(--colour-hover);
 }
 </style>
 
@@ -66,7 +70,7 @@ div.selected {
 `
 
 class GridSquare extends HTMLElement {
-	static get observedAttributes() { return ['status'] }
+	static get observedAttributes() { return ['status','front'] }
 
 	constructor() {
 		super();
@@ -84,13 +88,22 @@ class GridSquare extends HTMLElement {
 		this.shadowRoot.querySelector('div.back').classList.add(type);
 	}
 
+	gridItemFrontColourUpdate(type) {
+		this.shadowRoot.querySelector('div.front').classList.add(type);
+	}
+
 	connectedCallback() {
 		this.setGridText();
 	}
 
 	attributeChangedCallback(name, oldValue, newValue) {
-		if (name === 'status') {
-			this.gridItemStatusUpdate(newValue);
+		switch (name) {
+			case 'status':
+				this.gridItemStatusUpdate(newValue);
+				break;
+			case 'front':
+				this.gridItemFrontColourUpdate(newValue);
+				break;
 		}
 	}
 }
