@@ -3,6 +3,7 @@
 	<title>Battleships</title>
 	<link rel="stylesheet" href="index.css"/>
 	<script src="utils.js"></script>
+	<script src="components/GridSquare.js"></script>
 	<script src="components/Grid.js"></script>
 	<script src="components/PlayerSelection.js"></script>
 	<script src="components/FleetSelection.js"></script>
@@ -43,7 +44,7 @@
 		<div class="place-fleet">
 			<fleet-placement player="0"></fleet-placement>
 		</div>
-		<div>
+		<div style="position: relative; right: 5px">
 			<message-board></message-board>
 			<div class="state-grid">
 				<battleship-grid player="0"></battleship-grid>
