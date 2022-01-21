@@ -1,6 +1,6 @@
 function buildUtils() {
 	const buildGridFn = () => {
-		const COLS = ['1','2','3','4','5','6','7','8','9','X'];
+		const COLS = ['1','2','3','4','5','6','7','8','9','10'];
 		const ROWS = ['A','B','C','D','E','F','G','H','I','J'];
 		const BOARD_DIM = 10;
 		return {
