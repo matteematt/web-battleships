@@ -17,6 +17,7 @@ gridTemplate.innerHTML = `
 	padding: 18%;
 	background-color: var(--grid-colour-base);
 	aspect-ratio: 1/1;
+	transform-style: preserve-3d;
 }
 .grid-container div:hover {
 	background-color: var(--grid-colour-hover);
@@ -28,10 +29,29 @@ gridTemplate.innerHTML = `
 .grid-container div.hit {
 	background-color: var(--colour-grid-hit);
 	color: var(--colour-grid-hit);
+	animation-name: grid-item-hit;
+	animation-duration: 4s;
+	animation-iteration-count: 1;
 }
 .grid-container div.sink {
 	background-color: var(--colour-grid-sink);
 	color: var(--colour-grid-sink);
+}
+@keyframes grid-item-hit {
+	0% {
+		transform: scaleY(1);
+		background-color: var(--grid-colour-base);
+	}
+	50% {
+		transform: scaleY(0);
+		color: var(--colour-grid-hit);
+		background-color: var(--colour-grid-hit);
+	}
+	0% {
+		transform: scaleY(-1);
+		color: var(--colour-grid-hit);
+		background-color: var(--colour-grid-hit);
+	}
 }
 </style>
 <div class="grid">
