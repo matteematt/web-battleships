@@ -1,6 +1,6 @@
 function buildUtils() {
 	const buildGridFn = () => {
-		const COLS = ['1','2','3','4','5','6','7','8','9','X'];
+		const COLS = ['1','2','3','4','5','6','7','8','9','10'];
 		const ROWS = ['A','B','C','D','E','F','G','H','I','J'];
 		const BOARD_DIM = 10;
 		return {
@@ -65,7 +65,7 @@ function buildUtils() {
 			const currState = parseInt(getContainer().getAttribute('state')) || 0;
 			const nextState = currState + (to === 'next' ? 1 : -1);
 			getContainer().style.transform = `translateX(-${
-				((100 / containerContentLength()) * nextState) + (currState / 5)
+				((100 / containerContentLength()) * nextState) + (currState / 10)
 			}%)`
 			getContainer().setAttribute('state',nextState);
 			if (scroll === 'lock') {

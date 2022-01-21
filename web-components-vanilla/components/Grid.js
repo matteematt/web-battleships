@@ -17,26 +17,12 @@ gridTemplate.innerHTML = `
 	padding: 18%;
 	background-color: var(--grid-colour-base);
 	aspect-ratio: 1/1;
-}
-.grid-container div:hover {
-	background-color: var(--grid-colour-hover);
-}
-.grid-container div.miss {
-	background-color: var(--grid-colour-miss);
-	color: var(--grid-colour-miss);
-}
-.grid-container div.hit {
-	background-color: var(--colour-grid-hit);
-	color: var(--colour-grid-hit);
-}
-.grid-container div.sink {
-	background-color: var(--colour-grid-sink);
-	color: var(--colour-grid-sink);
+	transform-style: preserve-3d;
 }
 </style>
 <div class="grid">
 	<div class="grid-container">
-		${utils.grid.grid.map((x) => `<div>${x}</div>`).join('')}
+		${utils.grid.grid.map((x) => `<grid-square name="${x}"></grid-square>`).join('')}
 	</div>
 </div>
 `;
@@ -53,9 +39,9 @@ class Grid extends HTMLElement {
 		this.sfxTimeTimout = 500;
 	}
 
-	appendNthGridValuesClassName(ns, className) {
+	setNthGridValuesStatus(ns, attribute, className) {
 		ns.forEach((n) => {
-			this.shadowRoot.querySelector(`.grid-container div:nth-child(${n+1})`).classList.add(className);
+			this.shadowRoot.querySelector(`grid-square:nth-child(${n+1})`).setAttribute(attribute,'sink')
 		})
 	}
 
@@ -71,7 +57,7 @@ class Grid extends HTMLElement {
 				window.game.settings.playersTurn === 0 ? "two" : "one"
 			}'s "${attackedShip.type}"!`]);
 			const locNVals = attackedShip.loc.map((xy) => utils.grid.gridXYToNthValue(xy))
-			this.appendNthGridValuesClassName(locNVals, 'sink');
+			this.setNthGridValuesStatus(locNVals, 'status', 'sink');
 			window.game.ships[boardNum]	= window.game.ships[boardNum].filter(({loc}) =>
 				!loc.some(({x,y}) => x === xy.x && y === xy.y))
 			setTimeout(() => utils.sfx.play(utils.sfx.FX.SINK), this.sfxTimeTimout);
@@ -79,23 +65,25 @@ class Grid extends HTMLElement {
 	}
 
 	clickGridValue(gridElement) {
-		utils.sfx.play(utils.sfx.FX.SHOOT);
 		if (window.game.settings.gameDone) return;
+		utils.sfx.play(utils.sfx.FX.SHOOT);
 		const boardNum = parseInt(this.getAttribute('player'));
 		if (window.game.settings.playersTurn === boardNum) return;
-		const xy = utils.grid.gridRefToXY(gridElement.innerHTML);
+		const xy = utils.grid.gridRefToXY(gridElement.getAttribute('name'));
 		let result = "MISS";
 		if (window.game.board[boardNum].some(({x,y}) => x === xy.x && y === xy.y)) {
 			window.game.board[boardNum] =
 				window.game.board[boardNum].filter(({x,y}) => !(x === xy.x && y === xy.y))
-			gridElement.classList.add('hit')
+			// gridElement.classList.add('hit')
+			gridElement.setAttribute('status','hit')
 			result = "HIT";
 			gridElement.removeEventListener('click', this.gridCallbacks[gridElement.innerHTML]);
 			delete this.gridCallbacks[gridElement.innerHTML]
 			setTimeout(() => utils.sfx.play(utils.sfx.FX.HIT), this.sfxTimeTimout);
 			this.performGridHit(boardNum, xy);
 		} else {
-			gridElement.classList.add('miss')
+			// gridElement.classList.add('miss')
+			gridElement.setAttribute('status','miss')
 			setTimeout(() => utils.sfx.play(utils.sfx.FX.SPLASH), this.sfxTimeTimout);
 		}
 		addMessageToMessageBoard([`Player ${
@@ -107,7 +95,7 @@ class Grid extends HTMLElement {
 	}
 
 	connectedCallback() {
-		this.shadowRoot.querySelectorAll('.grid-container div').forEach((gridSpace) => {
+		this.shadowRoot.querySelectorAll('grid-square').forEach((gridSpace) => {
 			this.gridCallbacks[gridSpace.innerHTML] = () => this.clickGridValue(gridSpace)
 			gridSpace.addEventListener('click', this.gridCallbacks[gridSpace.innerHTML])
 		})
