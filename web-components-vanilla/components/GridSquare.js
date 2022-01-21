@@ -16,7 +16,7 @@ div.inner {
   transform-style: preserve-3d;
 	text-align: center;
 }
-div.container:hover div.inner {
+div.container.flipped div.inner {
 	transform: rotateY(180deg);
 }
 div.base {
@@ -30,9 +30,28 @@ div.base {
 div.front {
 	background-color: var(--grid-colour-base);
 }
+div.front:hover {
+	background-color: var(--grid-colour-hover);
+}
 div.back {
-	background-color: var(--colour-hover);
 	transform: rotateY(180deg);
+}
+
+div.miss {
+	background-color: var(--grid-colour-miss);
+	color: var(--grid-colour-miss);
+}
+div.hit {
+	background-color: var(--colour-grid-hit);
+	color: var(--colour-grid-hit);
+}
+div.sink {
+	background-color: var(--colour-grid-sink);
+	color: var(--colour-grid-sink);
+}
+div.selected {
+	background-color: var(--colour-hover);
+	color: var(--colour-hover);
 }
 </style>
 
@@ -61,7 +80,8 @@ class GridSquare extends HTMLElement {
 	}
 
 	gridItemStatusUpdate(type) {
-		// this.shadowRoot.querySelector('div.grid-base').classList.add('gone');
+		this.shadowRoot.querySelector('div.container').classList.add('flipped');
+		this.shadowRoot.querySelector('div.back').classList.add(type);
 	}
 
 	connectedCallback() {
