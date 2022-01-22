@@ -66,6 +66,7 @@ class Grid extends HTMLElement {
 
 	clickGridValue(gridElement) {
 		if (window.game.settings.gameDone) return;
+		if (window.game.settings.playersTurn == this.getAttribute("player")) return;
 		utils().sfx.play(utils().sfx.FX.SHOOT);
 		const boardNum = parseInt(this.getAttribute('player'));
 		if (window.game.settings.playersTurn === boardNum) return;
