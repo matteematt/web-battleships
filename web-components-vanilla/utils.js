@@ -1,4 +1,8 @@
 let settingsPlayAudio = false;
+
+// Pretty inefficient that we have to execute this every time, but we have to hoist
+// utils so we can use it everywhere in the minified bundle. For a real app we'd
+// obviously use a build tool
 function utils() {
 	const buildGridFn = () => {
 		const COLS = ['1','2','3','4','5','6','7','8','9','10'];
