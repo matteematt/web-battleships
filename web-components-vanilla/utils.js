@@ -1,4 +1,9 @@
-function buildUtils() {
+let settingsPlayAudio = false;
+
+// Pretty inefficient that we have to execute this every time, but we have to hoist
+// utils so we can use it everywhere in the minified bundle. For a real app we'd
+// obviously use a build tool
+function utils() {
 	const buildGridFn = () => {
 		const COLS = ['1','2','3','4','5','6','7','8','9','10'];
 		const ROWS = ['A','B','C','D','E','F','G','H','I','J'];
@@ -104,7 +109,6 @@ function buildUtils() {
 		}
 	}
 	const buildSoundFXFn = () => {
-		let playAudio = false;
 		const FX = {
 			SHOOT: 'assets/sfx/shoot.mp3',
 			HIT: 'assets/sfx/hit.mp3',
@@ -115,14 +119,14 @@ function buildUtils() {
 			CLICK_BIG: 'assets/sfx/click_big.mp3',
 		}
 		const play = (fx) => {
-			if (!playAudio) return;
+			if (!settingsPlayAudio) return;
 			if (!Object.keys(FX).map((k) => FX[k]).includes(fx)) throw new Error(`Invalid sfx "${fx}"`)
 			let audio = new Audio(fx);
 			audio.play();
 		}
 		const toggleAudio = () => {
-			playAudio = !playAudio;
-			return playAudio;
+			settingsPlayAudio = !settingsPlayAudio;
+			return settingsPlayAudio;
 		}
 		return {
 			FX,
@@ -136,5 +140,3 @@ function buildUtils() {
 		sfx: buildSoundFXFn(),
 	}
 }
-
-const utils = buildUtils();

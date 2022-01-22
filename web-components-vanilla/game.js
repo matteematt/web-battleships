@@ -68,15 +68,15 @@ function Game() {
 	const placeShipOnBoard = (boardNumber, placingShip) => {
 		const {s: shipSize, n: shipType } = placingShip;
 		const rootPlacement = {
-			x: Math.floor(Math.random() * utils.grid.BOARD_DIM),
-			y: Math.floor(Math.random() * utils.grid.BOARD_DIM)
+			x: Math.floor(Math.random() * utils().grid.BOARD_DIM),
+			y: Math.floor(Math.random() * utils().grid.BOARD_DIM)
 		};
-		const nextShipSpot = utils.grid.directionFn[Math.floor(Math.random() * 4)];
+		const nextShipSpot = utils().grid.directionFn[Math.floor(Math.random() * 4)];
 		const newShipPlacement = [rootPlacement];
 		for (let i = 1; i < shipSize; i++) {
 			newShipPlacement.push(nextShipSpot(newShipPlacement[newShipPlacement.length - 1]))
 		}
-		if (!checkShipPlacementIsValid(boardNumber, utils.grid.BOARD_DIM, newShipPlacement)) {
+		if (!checkShipPlacementIsValid(boardNumber, utils().grid.BOARD_DIM, newShipPlacement)) {
 			throw new Error("Invalid ship placement, try again")
 		} else {
 			window.game.board[boardNumber] = window.game.board[boardNumber].concat(newShipPlacement);
@@ -121,14 +121,14 @@ function Game() {
 		if (window.game.board[1].length === 0) {
 			window.game.settings.gameDone = true;
 			addMessageToMessageBoard(['Player One WON!!'])
-			utils.sfx.play(utils.sfx.FX.END);
+			utils().sfx.play(utils().sfx.FX.END);
 			return true;
 		} else if (window.game.board[0].length === 0) {
 			window.game.settings.gameDone = true;
 			// playerSelectionOptions from PlayerSelection.js
 			const playerTwoType = playerSelectionOptions.filter(({type}) => type === window.game.settings.vs)[0].name
 			addMessageToMessageBoard([`Player Two (${playerTwoType}) WON!!`])
-			utils.sfx.play(utils.sfx.FX.END);
+			utils().sfx.play(utils().sfx.FX.END);
 			return true;
 		}
 		return false;

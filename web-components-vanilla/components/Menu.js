@@ -36,10 +36,10 @@ class Menu extends HTMLElement {
 	sfxButton() {
 		const img = this.shadowRoot.querySelector('div.control-row img:nth-child(1)');
 		img.addEventListener('click', () => {
-			const isNotMuted = utils.sfx.toggleAudio();
+			const isNotMuted = utils().sfx.toggleAudio();
 			if (isNotMuted) {
 				img.src = 'assets/Volume-Speaker-02-256.png';
-				utils.sfx.play(utils.sfx.FX.CLICK_BIG);
+				utils().sfx.play(utils().sfx.FX.CLICK_BIG);
 			} else {
 				img.src = 'assets/Volume-Speaker-01-256.png';
 			}
