@@ -1,6 +1,6 @@
 FROM scratch as static-site
 WORKDIR /app
-COPY . .
+COPY /dist .
 FROM nginx:1.21.5 as server
 COPY --from=static-site /app /usr/share/nginx/html
 EXPOSE 80
