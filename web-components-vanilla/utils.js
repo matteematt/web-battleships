@@ -32,9 +32,10 @@ function utils() {
 			 * @return {x: 1, y: 8}
 			 */
 			gridRefToXY(gridRef) {
+				const [_,r,c] = gridRef.match('([A-J]+)([0-9]+)')
 				return {
-					x: COLS.indexOf(gridRef[1]),
-					y: ROWS.indexOf(gridRef[0]),
+					x: COLS.indexOf(c),
+					y: ROWS.indexOf(r),
 				}
 			},
 			/**
